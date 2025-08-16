@@ -15,6 +15,7 @@ Helpers for semantic operations in Go.
 - [Installation](#installation)
 - [Function: EstimatePayloadOf](#function-estimatepayloadof)
   - [Supported Types](#supported-types)
+  - [Use case](#use-case)
   - [Examples](#examples)
 - [Performance Notes](#performance-notes)
 - [License](#license)
@@ -73,6 +74,9 @@ For `string` and `[]string`, the actual content size is summed.
 If the type is not supported, the function returns `semantic.ErrFailEstimatePayload`.
 
 ---
+
+### Use case
+Real-world case: Calculating request/response size and writing it into the span(in database provide library)
 
 ### Examples
 
