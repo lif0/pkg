@@ -5,6 +5,8 @@ Helpers for semantic operations in Go.
 📦 `go get github.com/lif0/pkg/semantic`  
 🧪 Requires **Go 1.19+**
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)
+
 ---
 
 ## Contents

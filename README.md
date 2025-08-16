@@ -3,9 +3,6 @@
 <h4 align="center">✨A collection of low-level, dependency-free(mostly), high-performance Go packages✨</h2>
 
 
-
-[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg)
-
 </div>
 
 

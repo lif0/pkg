@@ -1,3 +1,8 @@
+# common
+
+- [ ] Настроить git-workflow(автозапуск тестов, бейдж покрытия тестами)
+
+
 # semantic
 
 ## EstimatePayloadOf
