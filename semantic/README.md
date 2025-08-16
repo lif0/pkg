@@ -6,6 +6,8 @@ Helpers for semantic operations in Go.
 🧪 Requires **Go 1.19+**
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)
+[![semantic](https://coveralls.io/repos/github/lif0/pkg/badge.svg?flag=semantic&branch=main)](https://coveralls.io/github/lif0/pkg?flag=semantic&branch=main)
+
 
 ---
 
