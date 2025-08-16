@@ -1,6 +1,6 @@
 <div align="center">
 <img src=".github/assets/pkg_poster_round.png"  width="256" height="256" > 
-<h4 align="center">✨A collection of low-level, dependency-free(mostly), high-performance Go packages✨</h2>
+<h4 align="center">A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
 
 
 </div>
@@ -66,6 +66,7 @@ To contribute a package, feature, or bugfix:
 - All code must be tested and benchmarked
 - Very desirable use standard library imports are allowed
 - APIs should be minimal, idiomatic, and efficient
+- Conventional Commits [(see)](https://www.conventionalcommits.org/en/v1.0.0/)
 
 To propose a new idea or package, please open an issue or discussion with:
 
