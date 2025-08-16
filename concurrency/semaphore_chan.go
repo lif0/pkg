@@ -1,4 +1,3 @@
-// Package concurrency provides concurrency utilities.
 package concurrency
 
 // Semaphore is a simple counting semaphore using a buffered channel.
