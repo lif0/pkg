@@ -1,0 +1,10 @@
+{
+  "gopls": {
+    "analyses": {
+      "infertypeargs": false
+    }
+  },
+  "cSpell.words": [
+    "Nnil"
+  ]
+}
