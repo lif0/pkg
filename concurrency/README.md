@@ -68,7 +68,7 @@ sem.Release()
 - [] Future/Promise
 - [] MS Queue
 
-Contributions and ideas are welcome!
+Contributions and ideas are welcome! 🤗
 
 ---
 

@@ -15,10 +15,9 @@ Helpers for semantic operations in Go.
 - [Installation](#installation)
 - [Function: EstimatePayloadOf](#function-estimatepayloadof)
   - [Supported Types](#supported-types)
-  - [Performance](#performance)
+  - [Performance Notes](#performance-notes)
   - [Use case](#use-case)
   - [Examples](#examples)
-- [Performance Notes](#performance-notes)
 - [License](#license)
 
 ---
@@ -48,11 +47,20 @@ func EstimatePayloadOf(v any) int
 
 Returns an **approximate payload size (in bytes)** of the given value.
 
-## Performance
+## Performance Notes
 
 This function performs **zero allocations** and runs with **0 B/op**. [See benchmark](/semantic/estimate_payload_bench_out.txt)
 
-⚠️ Check [performance-notes](#performance-notes)
+- **No memory allocations** — `0 B/op`, for all primitive types.
+- **Reflection** is used only for arrays and structs
+- - support any primitive types like array
+- - support only time.Time{} like struct
+- For arrays `[N]T`, prefer passing `*[N]T` to avoid value copy.
+
+Check:
+
+- [Benchmarks](/semantic/estimate_payload_bench_test.go)
+- [Tests](/semantic/estimate_payload_test.go)
 
 ---
 
@@ -71,17 +79,18 @@ Scalar types (and pointers to them):
 Containers:
 
 - `[]T`, `[]*T`, `*[]T`, `*[]*T` — slices
-- `[N]T`, `*[N]T` — arrays (via reflection)
+- `[N]T`, `*[N]T`, `[N]*T`, `*[N]*T` — arrays (via reflection)
 
 For pointers and slices, `nil` is treated as zero-size.  
 For `string` and `[]string`, the actual content size is summed.
 
-If the type is not supported, the function returns `semantic.ErrFailEstimatePayload`.
+If the type is not supported, the function returns `semantic.ErrFailEstimatePayload(-1)`.
 
 ---
 
 ### Use case
-Real-world case: Calculating request/response size and writing it into the span(in database provide library)
+
+Real-world case: Calculating request/response size and writing it into the span(in database provider library)
 
 ### Examples
 
@@ -97,7 +106,7 @@ Estimate a string:
 
 ```go
 s, err := EstimatePayloadOf("hello")
-// s == 5 (length in bytes)
+// s == 5 len("hello")
 ```
 
 Estimate a slice of strings:
@@ -106,6 +115,12 @@ Estimate a slice of strings:
 names := []string{"John", "Doe"}
 size, err := EstimatePayloadOf(names)
 // size == len("John") + len("Doe") == 4 + 3 == 7
+```
+
+```go
+names := []string{"John", nil}
+size, err := EstimatePayloadOf(names)
+// size == len("John") + len("") == 4 + 1 == 5
 ```
 
 Estimate a struct:
@@ -126,16 +141,16 @@ Estimate an array (pass by pointer for performance):
 ```go
 var arr [1000]int32
 size, err := EstimatePayloadOf(&arr)
-// size = 1000*4 = 4000. It happen because array pre-allocate all line(in some case slice do that too)
+// size = 1000*4 = 4000. It happen because array pre-allocate all line(in some way slice do that also)
 ```
 
 ---
 
-## Performance Notes
+## Roadmap
 
-- **No memory allocations** — `0 B/op`, for all primitive types.
-- **Reflection** is used only for arrays and structs(only time.Time{})
-- For arrays `[N]T`, prefer passing `*[N]T` to avoid value copy.
+☹️ No idea
+
+Contributions and ideas are welcome! 🤗
 
 ---
 
