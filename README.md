@@ -30,8 +30,7 @@ All packages are:
 
 Extensions for concurrent programming.
 
-- **Semaphore64** — optimized for up to 64 slots using bit-level atomic operations (zero allocations, extremely fast)
-- **Semaphore** — traditional semaphore based on buffered channels
+- **Semaphore** — traditional semaphore with capacity.
 
 ### [sync](./sync/README.md)
 

@@ -15,6 +15,7 @@ Helpers for semantic operations in Go.
 - [Installation](#installation)
 - [Function: EstimatePayloadOf](#function-estimatepayloadof)
   - [Supported Types](#supported-types)
+  - [Performance](#performance)
   - [Use case](#use-case)
   - [Examples](#examples)
 - [Performance Notes](#performance-notes)
@@ -42,12 +43,16 @@ go get github.com/lif0/pkg/semantic
 ## Function: EstimatePayloadOf
 
 ```go
-func EstimatePayloadOf(v any) (int, error)
+func EstimatePayloadOf(v any) int
 ```
 
 Returns an **approximate payload size (in bytes)** of the given value.
 
+## Performance
+
 This function performs **zero allocations** and runs with **0 B/op**. [See benchmark](/semantic/estimate_payload_bench_out.txt)
+
+⚠️ Check [performance-notes](#performance-notes)
 
 ---
 

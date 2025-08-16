@@ -14,7 +14,6 @@ Concurrency utilities for Go
 - [Installation](#installation)
 - [Usage](#usage)
   - [Semaphore](#semaphore)
-  - [Semaphore64](#semaphore64)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -27,7 +26,6 @@ This package provides lightweight concurrency primitives that avoid unnecessary 
 Currently available:
 
 - `Semaphore` — counting semaphore built using buffered channels.
-- `Semaphore64` — zero-allocation, atomic-based semaphore using bit operations.
 
 ---
 
@@ -43,7 +41,7 @@ go get github.com/lif0/pkg/concurrency@latest
 
 ### Semaphore
 
-A simple counting semaphore implemented via buffered channels.
+A simple counting semaphore implemented.
 
 ```go
 sem := concurrency.NewSemaphore(3)
@@ -53,21 +51,16 @@ sem.Acquire()
 sem.Release()
 ```
 
-### Semaphore64
-
-A zero-allocation semaphore using atomic and bit manipulation. Suitable for high-performance scenarios. But it has only 64 slots;
+Unlimited semaphore
 
 ```go
-var sem concurrency.Semaphore64
+sem := concurrency.NewSemaphore(0)
 
-ok := sem.TryAcquire()
-if ok {
-    // critical section
-    sem.Release()
-}
+sem.Release() // no panic, because for unlimited no-op
+sem.Acquire()
+// critical section
+sem.Release()
 ```
-
----
 
 ## Roadmap
 
