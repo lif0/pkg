@@ -1,13 +1,59 @@
 <div align="center">
-<img src=".github/assets/pkg_poster_round.png"  width="256" height="256" > 
-<h4 align="center">A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
+ <img src=".github/assets/pkg_poster_round.png"  width="256" height="256" >
+  <h4 align="center">🚀A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
 
+  <p align="center">
+    <!-- Build Status  -->
+    <a href="https://github.com/lif0/pkg/actions/">
+      <img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
+    </a>
+    <!-- Coverage -->
+    <a href="https://coveralls.io/github/lif0/pkg?branch=main">
+      <img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" />
+    </a>
+    <!-- GitHub -->
+    <a href="https://github.com/lif0/pkg">
+      <img src="https://img.shields.io/github/last-commit/lif0/pkg.svg" />
+    </a>
+    <!-- Go Card -->
+    <a href="https://goreportcard.com/report/github.com/lif0/pkg">
+      <img src="https://goreportcard.com/badge/github.com/lif0/pkg" />
+    </a>
+  </p>
 
-
-<a href='https://coveralls.io/github/lif0/pkg'><img src='https://coveralls.io/repos/github/lif0/pkg/badge.svg' alt='common pepo coverage status' /></a>
-
+<table align="center">
+    <thead>
+        <tr>
+            <th>sub-module</th>
+            <th>doc</th>
+            <th>about</th>
+        </tr>
+    </thead>
+        <tbody>
+        <!-- Module concurrency -->
+            <tr>
+                <td>
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg/concurrency">
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/concurrency?label=version&filter=v*"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg/semantic">
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/semantic?label=version&filter=v*"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg">
+                        <img src="https://img.shields.io/badge/doc-concurrency-007d9c?logo=go&logoColor=white&style=platic" />
+                    </a>
+                </td>
+                <td>
+            </tr>
+        </tbody>
+</table>
 </div>
 
+---
 
 ## Purpose
 

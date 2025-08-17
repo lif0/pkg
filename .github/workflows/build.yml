@@ -1,24 +1,32 @@
 name: build
 on:
-  push:
   pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - main
+
+env:
+  GO_VERSION: stable
 
 jobs:
 
   build:
+    name: Build Project
     runs-on: ubuntu-latest
     strategy:
       matrix:
         module: [semantic, concurrency]
 
     steps:
-      - name: Clone repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ${{ matrix.module }}/go.mod
+          go-version-file: ${{ env.GO_VERSION }}
           cache: true
           cache-dependency-path: ${{ matrix.module }}/go.sum
 
@@ -26,3 +34,5 @@ jobs:
         working-directory: ${{ matrix.module }}
         run: |
           go build ./...
+        env:
+          GOPATH: /home/runner/work/${{ github.event.repository.name }}/go
