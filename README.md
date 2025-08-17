@@ -1,25 +1,21 @@
 <div align="center">
- <img src=".github/assets/pkg_poster_round.png"  width="256" height="256" >
-  <h4 align="center">🚀A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
+<img src=".github/assets/pkg_poster_round.png"  width="256" height="256" >
+<h4 align="center">🚀A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
 
-  <p align="center">
-    <!-- Build Status  -->
-    <a href="https://github.com/lif0/pkg/actions/">
-      <img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
-    </a>
-    <!-- Coverage -->
-    <a href="https://coveralls.io/github/lif0/pkg?branch=main">
-      <img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" />
-    </a>
-    <!-- GitHub -->
-    <a href="https://github.com/lif0/pkg">
-      <img src="https://img.shields.io/github/last-commit/lif0/pkg.svg" />
-    </a>
-    <!-- Go Card -->
-    <a href="https://goreportcard.com/report/github.com/lif0/pkg">
-      <img src="https://goreportcard.com/badge/github.com/lif0/pkg" />
-    </a>
-  </p>
+<p align="center">
+<!-- Build Status  -->
+<a href="https://github.com/lif0/pkg/actions/">
+<img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
+</a>
+<!-- Coverage -->
+<a href="https://coveralls.io/github/lif0/pkg?branch=main">
+<img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" />
+</a>
+<!-- GitHub -->
+<a href="https://github.com/lif0/pkg">
+<img src="https://img.shields.io/github/last-commit/lif0/pkg.svg" />
+</a>
+</p>
 
 <table align="center">
     <thead>
@@ -27,30 +23,34 @@
             <th>sub-module</th>
             <th>doc</th>
             <th>about</th>
+            <th>report</th>
         </tr>
-    </thead>
+        </thead>
         <tbody>
-        <!-- Module concurrency -->
+            <!-- Module concurrency -->
             <tr>
                 <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg/concurrency">
+                    <a href=".">
                         <img src="https://img.shields.io/github/v/tag/lif0/pkg/concurrency?label=version&filter=v*"/>
                     </a>
                 </td>
                 <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg/semantic">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/semantic?label=version&filter=v*"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg">
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg/concurrency">
                         <img src="https://img.shields.io/badge/doc-concurrency-007d9c?logo=go&logoColor=white&style=platic" />
                     </a>
                 </td>
                 <td>
+                    <p>Concurrency utilities for Go</p>
+                </td>
+                <td>
+                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/concurrency">
+                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/concurrency" />
+                    </a>
+                </td>
             </tr>
         </tbody>
 </table>
+
 </div>
 
 ---
@@ -63,7 +63,7 @@ The goal is to build a unified, reusable toolkit that can be safely used across 
 
 All packages are:
 
-- Fully tested (95–100% coverage)
+- Fully tested (95-100% coverage)
 - Benchmarked
 - API-stable and versioned (semver)
 - Maintained and supported
