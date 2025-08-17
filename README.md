@@ -3,9 +3,10 @@
 <h4 align="center">A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
 
 
+
+<a href='https://coveralls.io/github/lif0/pkg'><img src='https://coveralls.io/repos/github/lif0/pkg/badge.svg' alt='common pepo coverage status' /></a>
+
 </div>
-
-
 
 
 ## Purpose

@@ -1,4 +1,4 @@
-name: coveralls
+name: test coverage
 on:
   push:
     paths:
@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: read        
-  pull-requests: write  
+# pull-requests: write  
 
 env:
   GO_VERSION: stable
@@ -27,20 +27,26 @@ jobs:
         working-directory: ${{ matrix.module }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone repo
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: ${{ matrix.module }}/go.mod
-          #go-version: ${{ env.GO_VERSION }}
+          cache: true
           cache-dependency-path: ${{ matrix.module }}/go.sum
+          #go-version: ${{ env.GO_VERSION }}
+          #cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Vet
         run: go vet ./...
 
       - name: Test
-        run: go test ./... -race -covermode=atomic -coverprofile=coverage.out
+        run: |
+          go test ./... -race -covermode=atomic -coverprofile=coverage_package_${{ matrix.module }}.out
+          pwd
+          ls
 
       - name: Build
         run: go build ./...
@@ -49,20 +55,20 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ matrix.module }}/coverage.out
+          file:  ${{ matrix.module }}/coverage_package_${{ matrix.module }}.out
           format: golang  
           flag-name: ${{ matrix.module }}
-          base-path: ${{ matrix.module }}
           parallel: true
-          debug: true
 
   finish:
     needs: test
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - uses: coverallsapp/github-action@v2
+      - name: Finish upload to Coveralls
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }} 
+          #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
           parallel-finished: true
           carryforward: "semantic,concurrency"

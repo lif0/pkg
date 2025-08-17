@@ -3,6 +3,7 @@
 - [ ] Настроить git-workflow(автозапуск тестов, бейдж покрытия тестами)
 - [ ] Выпустить первую версию v1.0.0
 
+- [ ]Бейджи как тут https://github.com/kshard/chatter/tree/456d9ae64dea7d70b774b857ab8377032509397b?tab=readme-ov-file
 
 # semantic
 
