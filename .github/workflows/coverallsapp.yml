@@ -20,7 +20,7 @@ env:
   GO_VERSION: stable
 
 jobs:
-  test:
+  Test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -55,22 +55,11 @@ jobs:
           pwd
           ls
 
-      - name: Install gopherbadger
-        run: go install github.com/jpoles1/gopherbadger@latest
-
-      - name: Generate badge
-        run: |
-          mkdir -p .github/assets/badges
-          gopherbadger -coverfile=coverage_package_${{ matrix.module }}.out \
-                       -badgefile=.github/assets/badges/_${{ matrix.module }}.svg
-
-      - name: Commit badges
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .github/assets/badges/*.svg
-          git commit -m "Update coverage badges [skip ci]" || echo "No changes"
-          git push
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.module }}
+          path: ${{ matrix.module }}/coverage_package_${{ matrix.module }}.out
 
       - name: Upload to Coveralls (flag = module)
         uses: coverallsapp/github-action@v2
@@ -81,8 +70,8 @@ jobs:
           flag-name: ${{ matrix.module }}
           parallel: true
 
-  finish:
-    needs: test
+  Finish:
+    needs: Test
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -93,3 +82,36 @@ jobs:
           #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
           parallel-finished: true
           carryforward: "semantic,concurrency"
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage-files
+
+      - name: Generate coverage badge JSONs
+        run: |
+          set -euo pipefail
+          mkdir -p .github/assets/badges
+
+          for module in semantic concurrency; do
+            COV=$(go tool cover -func=coverage-files/coverage-${module}/coverage_package_${module}.out | grep total | awk '{print $3}')
+            NUM=${COV%\%}
+            if (( $(echo "$NUM >= 95" | bc -l) )); then
+              COLOR="green"
+            elif (( $(echo "$NUM >= 85" | bc -l) )); then
+              COLOR="yellow"
+            else
+              COLOR="red"
+            fi
+
+            echo "{\"schemaVersion\":1,\"label\":\"$module\",\"message\":\"$COV\",\"color\":\"$COLOR\"}" \
+              > .github/assets/badges/${module}.json
+          done
+
+      - name: Commit badges
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/assets/badges/*.json
+          git commit -m "chore: update coverage badges [skip ci]" || echo "No changes"
+          git push
