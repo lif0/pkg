@@ -13,8 +13,8 @@ on:
       - '**'
 
 permissions:
-  contents: write # чтоб бейджи грузились
-#  pull-requests: write  
+  contents: read # чтоб бейджи грузились
+#  pull-requests: write
 
 env:
   GO_VERSION: stable

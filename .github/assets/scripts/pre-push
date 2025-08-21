@@ -1,0 +1,76 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+echo "Запуск pre-push хука..."
+
+# Проверка наличия Go
+if ! command -v go >/dev/null 2>&1; then
+  echo "Ошибка: Go не найден. Убедитесь, что Go установлен."
+  exit 1
+fi
+
+which go
+go version
+
+# Создание директории для бейджей
+mkdir -p ../../.github/assets/badges
+
+echo "`pwd`"
+
+# Поиск всех go.mod файлов в папках и подпапках
+find . -type f -name "go.mod" | while read -r mod_file; do
+  # Извлечение директории модуля
+  module_dir=$(dirname "$mod_file")
+  # Имя модуля (название папки)
+  module=$(basename "$module_dir")
+
+  echo "Обработка модуля $module в директории $module_dir"
+
+  # Переход в директорию модуля
+  pushd "$module_dir" > /dev/null
+
+  # Имя файла покрытия
+  FILE="coverage_package_${module}.out"
+
+  # Генерация файла покрытия
+  echo "Генерация покрытия для $module..."
+  go test ./... -race -covermode=atomic -coverprofile="$FILE"
+  if [ $? -ne 0 ]; then
+    echo "Ошибка: не удалось сгенерировать покрытие для $module"
+    popd > /dev/null
+    exit 1
+  fi
+
+  # Извлечение процента покрытия
+  COV=$(go tool cover -func="$FILE" | grep total | awk '{print $3}')
+  if [ -z "$COV" ]; then
+    echo "Ошибка: не удалось извлечь покрытие для $module"
+    popd > /dev/null
+    exit 1
+  fi
+
+  NUM=${COV%\%}
+  if (( $(echo "$NUM >= 95" | bc -l) )); then
+    COLOR="green"
+  elif (( $(echo "$NUM >= 85" | bc -l) )); then
+    COLOR="yellow"
+  else
+    COLOR="red"
+  fi
+
+  echo "`pwd`..."
+
+  cd ..
+
+  # Создание JSON-бейджа
+  echo "{\"schemaVersion\":1,\"label\":\"$module\",\"message\":\"$COV\",\"color\":\"$COLOR\"}" > ".github/assets/badges/${module}.json"
+
+  # Добавление JSON-бейджа в индекс Git
+  #git add ".github/assets/badges/${module}.json"
+
+  # Возврат в исходную директорию
+  popd > /dev/null
+done
+
+echo "Pre-push хук успешно завершен."
+exit 0
