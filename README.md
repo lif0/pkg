@@ -8,8 +8,11 @@
 <img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
 </a>
 <!-- Coverage -->
-<a href="https://coveralls.io/github/lif0/pkg?branch=main">
-<img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" />
+<a href="https://coveralls.io/github/lif0/pkg/concurrency?branch=main">
+<img src="https://raw.githubusercontent.com/lif0/pkg/main/.github/assets/badges/_concurrency.svg" />
+</a>
+<a href="https://coveralls.io/github/lif0/pkg/semantic?branch=main">
+<img src="https://raw.githubusercontent.com/lif0/pkg/main/.github/assets/badges/_semantic.svg" />
 </a>
 <!-- GitHub -->
 <a href="https://github.com/lif0/pkg">
@@ -17,10 +20,11 @@
 </a>
 </p>
 
+
 <table align="center">
     <thead>
         <tr>
-            <th>sub-module</th>
+            <th>package</th>
             <th>doc</th>
             <th>about</th>
             <th>report</th>
@@ -68,28 +72,6 @@ All packages are:
 - API-stable and versioned (semver)
 - Maintained and supported
 - Free of any non-standard dependencies
-
----
-
-## Packages
-
-### [concurrency](./concurrency/README.md)
-
-Extensions for concurrent programming.
-
-- **Semaphore** — traditional semaphore with capacity.
-
-### [sync](./sync/README.md)
-
-Synchronization primitives beyond the standard library.
-
-- **ReentrantLock** — mutex-like structure that can be safely acquired multiple times by the same goroutine
-
-### [semantic](./semantic/README.md)
-
-Helpers for semantic runtime operations.
-
-- **EstimatePayloadOf** — estimate size of a value in memory (bytes); supports scalars, strings, slices, arrays, pointers — with **0 B/op** ([see benchmarks](./semantic/estimate_payload_bench_out.txt))
 
 ---
 
