@@ -9,7 +9,7 @@
 </a>
 <!-- Coverage -->
 <a href="https://coveralls.io/github/lif0/pkg/concurrency?branch=main">
-<img src="https://raw.githubusercontent.com/lif0/pkg/main/.github/assets/badges/_concurrency.svg" />
+<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lif0/pkg/branch/.github/assets/badges/concurrency.json" alt="concurrency badge">
 </a>
 <a href="https://coveralls.io/github/lif0/pkg/semantic?branch=main">
 <img src="https://raw.githubusercontent.com/lif0/pkg/main/.github/assets/badges/_semantic.svg" />
