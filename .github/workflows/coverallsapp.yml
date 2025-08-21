@@ -52,14 +52,23 @@ jobs:
       - name: Test
         run: |
           go test ./... -race -covermode=atomic -coverprofile=coverage_package_${{ matrix.module }}.out
+        
+          ## Сейвим процент покрытия
+          FILE="coverage_package_${{ matrix.module }}.out"
+          cov_percent=$(go tool cover -func="$FILE" | grep total | awk '{print $3}')
+          echo "Процент покрытия пакета: " $cov_percent
+
+          ## Записываем в фаил
+          echo "$cov_percent" > "coverage_package_${{ matrix.module }}.percent"
+
           pwd
           ls
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.module }}
-          path: ${{ matrix.module }}/coverage_package_${{ matrix.module }}.out
+          name: ${{ matrix.module }}
+          path: ${{ matrix.module }}/coverage_package_${{ matrix.module }}.percent
 
       - name: Upload to Coveralls (flag = module)
         uses: coverallsapp/github-action@v2
@@ -82,11 +91,11 @@ jobs:
           #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
           parallel-finished: true
           carryforward: "semantic,concurrency"
-
+      
       - name: Download coverage artifacts
         uses: actions/download-artifact@v4
         with:
-          path: coverage-files
+          path: .
 
       - name: Generate coverage badge JSONs
         run: |
@@ -94,8 +103,11 @@ jobs:
           mkdir -p .github/assets/badges
 
           for module in semantic concurrency; do
-            COV=$(go tool cover -func=coverage-files/coverage-${module}/coverage_package_${module}.out | grep total | awk '{print $3}')
-            NUM=${COV%\%}
+            # читаем процент из файла и убираем знак %
+            PERCENT_FILE="${module}/coverage_package_${module}.percent"
+            NUM=$(cat "$PERCENT_FILE" | tr -d '%')
+            COV="${NUM}%"
+
             if (( $(echo "$NUM >= 95" | bc -l) )); then
               COLOR="green"
             elif (( $(echo "$NUM >= 85" | bc -l) )); then
@@ -107,6 +119,11 @@ jobs:
             echo "{\"schemaVersion\":1,\"label\":\"$module\",\"message\":\"$COV\",\"color\":\"$COLOR\"}" \
               > .github/assets/badges/${module}.json
           done
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # важно: нужен полный клон, чтобы пушить обратно
 
       - name: Commit badges
         run: |
