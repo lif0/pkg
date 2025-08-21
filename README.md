@@ -7,19 +7,11 @@
 <a href="https://github.com/lif0/pkg/actions/">
 <img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
 </a>
-<!-- Coverage -->
-<a href="https://coveralls.io/github/lif0/pkg/concurrency?branch=main">
-<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lif0/pkg/branch/.github/assets/badges/concurrency.json" alt="concurrency badge">
-</a>
-<a href="https://coveralls.io/github/lif0/pkg/semantic?branch=main">
-<img src="https://raw.githubusercontent.com/lif0/pkg/main/.github/assets/badges/_semantic.svg" />
-</a>
 <!-- GitHub -->
 <a href="https://github.com/lif0/pkg">
 <img src="https://img.shields.io/github/last-commit/lif0/pkg.svg" />
 </a>
 </p>
-
 
 <table align="center">
     <thead>
@@ -27,7 +19,7 @@
             <th>package</th>
             <th>doc</th>
             <th>about</th>
-            <th>report</th>
+            <th>badges</th>
         </tr>
         </thead>
         <tbody>
@@ -49,6 +41,57 @@
                 <td>
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/concurrency">
                         <img src="https://goreportcard.com/badge/github.com/lif0/pkg/concurrency" />
+                    </a>
+                    <a href="https://coveralls.io/github/lif0/pkg/concurrency?branch=main">
+                    <img alt="concurrency coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fconcurrency.json">
+                    </a>
+                </td>
+            </tr>
+            <!-- Module semantic -->
+            <tr>
+                <td>
+                    <a href=".">
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/semantic?label=version&filter=v*"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg/semantic">
+                        <img src="https://img.shields.io/badge/doc-semantic-007d9c?logo=go&logoColor=white&style=platic" />
+                    </a>
+                </td>
+                <td>
+                    <p>Helpers for semantic operations in Go.</p>
+                </td>
+                <td>
+                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/semantic">
+                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/semantic" />
+                    </a>
+                    <a href="https://coveralls.io/github/lif0/pkg/semantic?branch=main">
+                    <img alt="semantic coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fsemantic.json">
+                    </a>
+                </td>
+            </tr>
+            <!-- Module sync -->
+            <tr>
+                <td>
+                    <a href=".">
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/sync?label=version&filter=v*"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="https://pkg.go.dev/github.com/lif0/pkg/sync">
+                        <img src="https://img.shields.io/badge/doc-sync-007d9c?logo=go&logoColor=white&style=platic" />
+                    </a>
+                </td>
+                <td>
+                    <p>Extends the sync package.</p>
+                </td>
+                <td>
+                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/sync">
+                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/sync" />
+                    </a>
+                    <a href="https://coveralls.io/github/lif0/pkg/sync?branch=main">
+                    <img alt="sync coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fsync.json">
                     </a>
                 </td>
             </tr>
