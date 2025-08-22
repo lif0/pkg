@@ -31,7 +31,7 @@
                     </a>
                 </td>
                 <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg/concurrency">
+                    <a href="https://github.com/lif0/pkg/tree/main/concurrency">
                         <img src="https://img.shields.io/badge/doc-concurrency-007d9c?logo=go&logoColor=white&style=platic" />
                     </a>
                 </td>
@@ -55,12 +55,12 @@
                     </a>
                 </td>
                 <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg/semantic">
+                    <a href="https://github.com/lif0/pkg/tree/main/semantic">
                         <img src="https://img.shields.io/badge/doc-semantic-007d9c?logo=go&logoColor=white&style=platic" />
                     </a>
                 </td>
                 <td>
-                    <p>Helpers for semantic operations in Go.</p>
+                    <p>Semantic operations in Go.</p>
                 </td>
                 <td>
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/semantic">
@@ -79,7 +79,7 @@
                     </a>
                 </td>
                 <td>
-                    <a href="https://pkg.go.dev/github.com/lif0/pkg/sync">
+                    <a href="https://github.com/lif0/pkg/tree/main/sync">
                         <img src="https://img.shields.io/badge/doc-sync-007d9c?logo=go&logoColor=white&style=platic" />
                     </a>
                 </td>

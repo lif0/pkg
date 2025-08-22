@@ -1,12 +1,13 @@
 # semantic
 
-Helpers for semantic operations in Go.
+Semantic operations in Go.
 
-📦 `go get github.com/lif0/pkg/semantic`  
+📦 `go get github.com/lif0/pkg/semantic@latest`  
 🧪 Requires **Go 1.19+**
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)  
-![semantic coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-coverage.json)
+[![build](https://github.com/lif0/pkg/workflows/build/badge.svg)](https://github.com/lif0/pkg/workflows/build/badge.svg)
+[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)
+[![semantic coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json)](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json)
 [![semantic report card](https://goreportcard.com/badge/github.com/lif0/pkg/semantic)](https://goreportcard.com/report/github.com/lif0/pkg/semantic)
 
 ---
@@ -14,6 +15,7 @@ Helpers for semantic operations in Go.
 ## Contents
 
 - [Overview](#overview)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [API Reference](#api-reference)
   - [EstimatePayloadOf](#function-estimatepayloadof)
@@ -32,10 +34,16 @@ This package provides tools for semantic-level operations on Go values.
 
 ---
 
+## Requirements
+
+- **Go 1.19 or higher**
+
 ## Installation
 
+To install the package, run:
+
 ```bash
-go get github.com/lif0/pkg/semantic
+go get github.com/lif0/pkg/semantic@latest
 ```
 
 ---
