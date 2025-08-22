@@ -2,11 +2,11 @@
 
 Helpers for semantic operations in Go.
 
-📦 `go get github.com/lif0/pkg/semantic`  
+📦 `go get github.com/lif0/pkg/semantic`
 🧪 Requires **Go 1.19+**
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)
-[![semantic](https://coveralls.io/repos/github/lif0/pkg/badge.svg?flag=semantic&branch=main)](https://coveralls.io/github/lif0/pkg?flag=semantic&branch=main)
+![semantic coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-coverage.json)
 
 
 ---

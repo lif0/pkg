@@ -1,0 +1,54 @@
+name: Update badges after push
+
+on:
+  push:
+    branches:
+      - master
+    # Если пуш состоит ТОЛЬКО из изменений в папке с бейджами,
+    # workflow не запустится — это главный анти-цикл.
+    paths-ignore:
+      - '.github/assets/badges/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: badges-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-badges:
+    # Если вдруг всё-таки триггернется от коммита бота — пропускаем.
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # понадобится для пуша обратно
+
+      - name: Make script executable
+        run: chmod +x .github/scripts/pre-push
+
+      - name: Run badge generator
+        shell: bash
+        run: ./.github/scripts/pre-push
+
+      - name: Commit & push badges if changed
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Добавляем только директорию с бейджами
+          git add .github/assets/badges || true
+
+          # Коммитим только если есть изменения
+          if git diff --cached --quiet; then
+            echo "No badge changes. Skipping commit."
+          else
+            git commit -m "chore(badges): auto-update [skip ci]"
+            # Пушим обратно в ту же ветку
+            git push origin HEAD:${GITHUB_REF#refs/heads/}
+          fi

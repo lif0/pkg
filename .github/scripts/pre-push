@@ -63,7 +63,7 @@ find . -type f -name "go.mod" | while read -r mod_file; do
   cd ..
 
   # Создание JSON-бейджа
-  echo "{\"schemaVersion\":1,\"label\":\"$module\",\"message\":\"$COV\",\"color\":\"$COLOR\",\"style\":\"flat\"}" > ".github/assets/badges/${module}.json"
+  echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"$COV\",\"color\":\"$COLOR\",\"style\":\"flat\"}" > ".github/assets/badges/coverage-${module}.json"
 
   # Добавление JSON-бейджа в индекс Git
   #git add ".github/assets/badges/${module}.json"
