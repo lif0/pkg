@@ -42,7 +42,7 @@
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/concurrency">
                         <img src="https://goreportcard.com/badge/github.com/lif0/pkg/concurrency" />
                     </a>
-                    <a href="https://coveralls.io/github/lif0/pkg/concurrency?branch=main">
+                    <a href="https://coveralls.io/github/lif0/pkg">
                     <img alt="concurrency coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-concurrency.json">
                     </a>
                 </td>
@@ -66,7 +66,7 @@
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/semantic">
                         <img src="https://goreportcard.com/badge/github.com/lif0/pkg/semantic" />
                     </a>
-                    <a href="https://coveralls.io/github/lif0/pkg/semantic?branch=main">
+                    <a href="https://coveralls.io/github/lif0/pkg">
                     <img alt="semantic coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json">
                     </a>
                 </td>
@@ -90,7 +90,7 @@
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/sync">
                         <img src="https://goreportcard.com/badge/github.com/lif0/pkg/sync" />
                     </a>
-                    <a href="https://coveralls.io/github/lif0/pkg/sync?branch=main">
+                    <a href="https://coveralls.io/github/lif0/pkg">
                     <img alt="sync coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-sync.json">
                     </a>
                 </td>

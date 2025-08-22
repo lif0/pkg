@@ -1,4 +1,4 @@
-name: Update coverage submodules
+name: update coverage submodules
 
 on:
   workflow_run:
