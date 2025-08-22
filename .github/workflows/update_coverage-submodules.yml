@@ -1,6 +1,10 @@
-name: Update badges after push
+name: Update coverage submodules
 
 on:
+  workflow_run:
+    workflows: ["test coverage coverallsapp"]
+    types:
+      - completed
   push:
     branches:
       - main
