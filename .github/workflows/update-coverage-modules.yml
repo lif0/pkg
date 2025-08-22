@@ -3,7 +3,7 @@ name: Update badges after push
 on:
   push:
     branches:
-      - master
+      - main
     # Если пуш состоит ТОЛЬКО из изменений в папке с бейджами,
     # workflow не запустится — это главный анти-цикл.
     paths-ignore:
