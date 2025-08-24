@@ -11,7 +11,6 @@ Concurrency utilities for Go
 [![concurrency report card](https://goreportcard.com/badge/github.com/lif0/pkg/concurrency)](https://goreportcard.com/report/github.com/lif0/pkg/concurrency)
 
 ---
-
 ## Contents
 
 - [Overview](#overview)
@@ -19,6 +18,7 @@ Concurrency utilities for Go
 - [Installation](#installation)
 - [Features](#features)
   - [Semaphore](#semaphore)
+  - [WithLock](#withlock)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -168,6 +168,37 @@ func main() {
     // Release the slot
     sem.Release()
     fmt.Println("Released a slot")
+}
+```
+
+### WithLock
+
+`WithLock` is a helper function that executes an action while holding a lock.  
+It guarantees that the lock will always be released, even if the action panics.
+
+```go
+import (
+	"github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+	var mu sync.Mutex
+	counter := 0
+	var wg sync.WaitGroup
+
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+        wg.Go(func() {
+            for j := 0; j < 100; j++ {
+				concurrency.WithLock(&mu, func() {
+					counter++
+				})
+			}
+        })
+	}
+
+	wg.Wait()
+	fmt.Println("Final counter:", counter) // Always 500
 }
 ```
 
