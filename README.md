@@ -47,27 +47,27 @@
                     </a>
                 </td>
             </tr>
-            <!-- Module semantic -->
+            <!-- Module utils -->
             <tr>
                 <td>
                     <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/semantic?label=version&filter=v*"/>
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/utils?label=version&filter=v*"/>
                     </a>
                 </td>
                 <td>
-                    <a href="https://github.com/lif0/pkg/tree/main/semantic">
-                        <img src="https://img.shields.io/badge/doc-semantic-007d9c?logo=go&logoColor=white&style=platic" />
+                    <a href="https://github.com/lif0/pkg/tree/main/utils">
+                        <img src="https://img.shields.io/badge/doc-utils-007d9c?logo=go&logoColor=white&style=platic" />
                     </a>
                 </td>
                 <td>
-                    <p>Semantic operations in Go.</p>
+                    <p>Utils for Go.</p>
                 </td>
                 <td>
-                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/semantic">
-                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/semantic" />
+                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/utils">
+                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/utils" />
                     </a>
                     <a href="https://coveralls.io/github/lif0/pkg">
-                    <img alt="semantic coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json">
+                    <img alt="utils coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json">
                     </a>
                 </td>
             </tr>
@@ -120,7 +120,7 @@ All packages are:
 
 ## Stability
 
-This repository follows [semantic versioning](https://semver.org/).  
+This repository follows [utils versioning](https://semver.org/).  
 All exported APIs are stable, and breaking changes will be reflected in the major version.
 
 Releases are tagged and versioned. You can safely pin versions for use in production.

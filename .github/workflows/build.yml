@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        module: [semantic, concurrency]
+        module: [utils, concurrency]
 
     steps:
       - name: Checkout code

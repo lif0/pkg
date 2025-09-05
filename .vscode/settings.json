@@ -5,9 +5,15 @@
     }
   },
   "cSpell.words": [
+    "commitish",
     "covermode",
     "coverprofile",
     "Nnil",
+    "nocasematch",
+    "pipefail",
+    "sdreflect",
+    "shopt",
+    "softprops",
     "uintptr"
   ]
 }

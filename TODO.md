@@ -6,7 +6,7 @@
 - [ ]Бейджи как тут https://github.com/kshard/chatter/tree/456d9ae64dea7d70b774b857ab8377032509397b?tab=readme-ov-file
 
 - [] Бейджи
-У Coveralls есть «Subprojects» (concurrency, semantic), но отдельные публичные бейджи для них он не генерирует — на странице каждого сабпроекта показан тот же общий бейдж репозитория. 
+У Coveralls есть «Subprojects» (concurrency, utils), но отдельные публичные бейджи для них он не генерирует — на странице каждого сабпроекта показан тот же общий бейдж репозитория. 
 Coveralls.io
 +1
 
@@ -14,7 +14,7 @@ Coveralls.io
 
 https://img.shields.io/badge/coverage-99%25-green
 
-# semantic
+# utils
 
 ## EstimatePayloadOf
 - [ ] Попробовать превысчитать размеры для кейсов где используется unsafe и сравнить разницу

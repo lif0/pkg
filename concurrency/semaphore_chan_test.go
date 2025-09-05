@@ -39,7 +39,7 @@ func TestNewSemaphore_UnlimitedAndLimited(t *testing.T) {
 func TestNilSemaphore_Behavior(t *testing.T) {
 	var s *concurrency.Semaphore // nil receiver must be safe
 
-	// no panics and "unlimited" semantics
+	// no panics and "unlimited" utils
 	s.Acquire()
 	if err := s.AcquireContext(context.Background()); err != nil {
 		t.Fatalf("AcquireContext(nil) error = %v, want nil", err)

@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - '**.go'
-      - 'semantic/**'
+      - 'utils/**'
       - 'concurrency/**'
       - '.github/workflows/**'
   pull_request:
@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        module: [semantic, concurrency]
+        module: [utils, concurrency]
     defaults:
       run:
         working-directory: ${{ matrix.module }}
@@ -79,4 +79,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} 
           #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
           parallel-finished: true
-          carryforward: "semantic,concurrency"
+          carryforward: "utils,concurrency"

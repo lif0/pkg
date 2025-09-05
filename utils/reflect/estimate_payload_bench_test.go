@@ -1,13 +1,13 @@
-package semantic_test
+package reflect_test
 
 import (
 	"fmt"
 	"math/rand"
-	"reflect"
+	sdreflect "reflect"
 	"testing"
 	"time"
 
-	"github.com/lif0/pkg/semantic"
+	"github.com/lif0/pkg/utils/reflect"
 )
 
 func BenchmarkEstimatePayloadOf(b *testing.B) {
@@ -85,14 +85,14 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	// setup *[N]*T
 	prtArrayPrtVal := &arrayPrtVal
 
-	TName := reflect.TypeOf(val).String()
+	TName := sdreflect.TypeOf(val).String()
 
 	// T
 	b.Run(TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(val)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(val)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -101,8 +101,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("*"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(ptrVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(ptrVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -112,8 +112,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("[]"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(sliceValAny)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(sliceValAny)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -123,8 +123,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("*[]"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(ptrSliceVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(ptrSliceVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -134,8 +134,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("[]*"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(slicePrtValAny)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(slicePrtValAny)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -145,8 +145,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("*[]*"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(prtSlicePrtVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(prtSlicePrtVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -156,8 +156,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("[100]"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(arrayValAny)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arrayValAny)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -167,8 +167,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("*[100]"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(ptrArrayVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(ptrArrayVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -178,8 +178,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("[100]*"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(arrayPrtVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arrayPrtVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -189,8 +189,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 	b.Run("*[100]*"+TName, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			res := semantic.EstimatePayloadOf(prtArrayPrtVal)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(prtArrayPrtVal)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -203,8 +203,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg []T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -215,8 +215,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg *[]T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -227,8 +227,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg []*T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -239,8 +239,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg []*T
-			res := semantic.EstimatePayloadOf(&arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(&arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -251,8 +251,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg [100]T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -263,8 +263,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg *[100]T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -275,8 +275,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg [100]*T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}
@@ -287,8 +287,8 @@ func benchmarkEstimateSizeOf[T any](b *testing.B, getValue func() T) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			var arg *[100]*T
-			res := semantic.EstimatePayloadOf(arg)
-			if res == semantic.ErrFailEstimatePayload {
+			res := reflect.EstimatePayloadOf(arg)
+			if res == reflect.ErrFailEstimatePayload {
 				fmt.Println(TName + " miss switch")
 			}
 		}

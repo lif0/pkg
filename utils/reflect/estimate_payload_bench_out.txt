@@ -1,8 +1,8 @@
-Note author: ONLY [N]T has 1 allocs, it's okey, SEE performance recommendations in func's description or in semantic/README.md
+Note author: ONLY [N]T has 1 allocs, it's okey, SEE performance recommendations in func's description or in utils/README.md
 
 goos: darwin
 goarch: arm64
-pkg: github.com/lif0/pkg/semantic
+pkg: github.com/lif0/pkg/utils/reflect
 cpu: Apple M2
 BenchmarkEstimatePayloadOf/int-8         	                405672769	         2.987 ns/op	       0 B/op	       0 allocs/op
 BenchmarkEstimatePayloadOf/*int-8        	                504622111	         2.432 ns/op	       0 B/op	       0 allocs/op
@@ -347,4 +347,4 @@ BenchmarkEstimatePayloadOf/*[100]time.Duration{nil}-8      	324292442	         3
 BenchmarkEstimatePayloadOf/[100]*time.Duration{nil}-8      	 4542721	         259.9 ns/op	       0 B/op	       0 allocs/op
 BenchmarkEstimatePayloadOf/*[100]*time.Duration{nil}-8     	359782150	         3.338 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	github.com/lif0/pkg/semantic	483.253s
+ok  	github.com/lif0/pkg/utils/reflect	483.253s

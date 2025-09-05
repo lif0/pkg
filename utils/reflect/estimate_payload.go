@@ -1,4 +1,4 @@
-package semantic
+package reflect
 
 import (
 	"reflect"

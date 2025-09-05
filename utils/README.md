@@ -1,14 +1,14 @@
-# semantic
+# utils
 
-Semantic operations in Go.
+Utils for Go.
 
-📦 `go get github.com/lif0/pkg/semantic@latest`  
+📦 `go get github.com/lif0/pkg/utils@latest`  
 🧪 Requires **Go 1.19+**
 
 [![build](https://github.com/lif0/pkg/workflows/build/badge.svg)](https://github.com/lif0/pkg/workflows/build/badge.svg)
-[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/semantic)
-[![semantic coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json)](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-semantic.json)
-[![semantic report card](https://goreportcard.com/badge/github.com/lif0/pkg/semantic)](https://goreportcard.com/report/github.com/lif0/pkg/semantic)
+[![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/utils)
+[![utils coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json)](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json)
+[![utils report card](https://goreportcard.com/badge/github.com/lif0/pkg/utils)](https://goreportcard.com/report/github.com/lif0/pkg/utils)
 
 ---
 
@@ -30,7 +30,7 @@ Semantic operations in Go.
 
 ## Overview
 
-This package provides tools for semantic-level operations on Go values.  
+This package provides tools for Go values.  
 
 ---
 
@@ -43,7 +43,7 @@ This package provides tools for semantic-level operations on Go values.
 To install the package, run:
 
 ```bash
-go get github.com/lif0/pkg/semantic@latest
+go get github.com/lif0/pkg/utils@latest
 ```
 
 ---
@@ -60,7 +60,7 @@ Returns an **approximate payload size (in bytes)** of the given value.
 
 #### Performance Notes
 
-This function performs **zero allocations** and runs with **0 B/op** for supported types. [See benchmark](/semantic/estimate_payload_bench_out.txt)
+This function performs **zero allocations** and runs with **0 B/op** for supported types. [See benchmark](/utils/reflect/estimate_payload_bench_out.txt)
 
 - **No memory allocations** — `0 B/op` for all primitive types.
 - **Reflection** is used only for arrays and structs:
@@ -70,8 +70,8 @@ This function performs **zero allocations** and runs with **0 B/op** for support
 
 Check:
 
-- [Benchmarks](/semantic/estimate_payload_bench_test.go)
-- [Tests](/semantic/estimate_payload_test.go)
+- [Benchmarks](/utils/reflect/estimate_payload_bench_test.go)
+- [Tests](/utils/reflect/estimate_payload_test.go)
 
 #### Supported Types
 
@@ -93,7 +93,7 @@ Containers:
 For pointers and slices, `nil` is treated as zero-size.  
 For `string` and `[]string`, the actual content size is summed.
 
-If the type is not supported, the function returns `semantic.ErrFailEstimatePayload(-1)`.
+If the type is not supported, the function returns `reflect.ErrFailEstimatePayload(-1)`.
 
 #### Use Case
 
@@ -141,7 +141,7 @@ type User struct {
 }
 u := User{ID: 123, Name: "Alice"}
 size := EstimatePayloadOf(u)
-// size == semantic.ErrFailEstimatePayload(-1), because it is a custom struct
+// size == reflect.ErrFailEstimatePayload(-1), because it is a custom struct
 ```
 
 Estimate an array (pass by pointer for performance):
