@@ -27,7 +27,7 @@
             <tr>
                 <td>
                     <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/concurrency?label=version&filter=v*"/>
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=concurrency/*"/>
                     </a>
                 </td>
                 <td>
@@ -51,7 +51,7 @@
             <tr>
                 <td>
                     <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/utils?label=version&filter=v*"/>
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=utils/*"/>
                     </a>
                 </td>
                 <td>
@@ -75,7 +75,7 @@
             <tr>
                 <td>
                     <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg/sync?label=version&filter=v*"/>
+                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=sync/*"/>
                     </a>
                 </td>
                 <td>
