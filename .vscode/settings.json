@@ -8,6 +8,8 @@
     "commitish",
     "covermode",
     "coverprofile",
+    "esac",
+    "mapfile",
     "Nnil",
     "nocasematch",
     "pipefail",

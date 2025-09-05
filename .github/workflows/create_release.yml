@@ -125,13 +125,12 @@ jobs:
         id: changelog
         shell: bash
         run: |
-          set -x  # Включить отладку
+          #set -x  # Включить отладку
           set -euo pipefail
           
           modulePath="${{ steps.vars.outputs.dir_rel }}"
           moduleName="${{ steps.vars.outputs.module_name }}"
           prev="${{ steps.prev.outputs.prev_tag }}"
-          title="${moduleName} ${{ steps.vars.outputs.version }}"
           file="CHANGELOG-${moduleName}.md"
 
           # Build git range
@@ -153,8 +152,9 @@ jobs:
           commits=()
           for sha in "${all_in_range[@]}"; do
             subj="$(git show -s --format='%s' "$sha")"
-            if [[ "$subj" =~ ^[a-zA-Z]+\(([^\)]+)\) ]]; then
-              scope="${BASH_REMATCH[1]}"
+            # Обновляем регулярное выражение для обработки префиксов [PKG-0]
+            if [[ "$subj" =~ ^(\[[^]]+\][[:space:]]*)?[a-zA-Z]+\(([^\)]+)\) ]]; then
+              scope="${BASH_REMATCH[2]}"  # Теперь вторая группа захвата
               IFS=',' read -ra scopes <<< "$scope"
               for s in "${scopes[@]}"; do
                 s_trim="$(echo "$s" | xargs)"
@@ -167,7 +167,6 @@ jobs:
             fi
           done
 
-          echo "# ${title}" > "$file"
           echo >> "$file"
           if [[ -n "$baseLabel" ]]; then
             echo "_Сравнение с **$baseLabel**_" >> "$file"
@@ -186,7 +185,7 @@ jobs:
 
             type="other"
             # Используем grep для определения типа
-            if echo "$subj" | grep -E -q "^[[:space:]]*(\[.*\][[:space:]]*)?(feat|fix|perf|refactor|docs|test|build|ci|chore|deps)(\([^)]*\))?[[:space:]]*:"; then
+            if echo "$subj" | grep -E -q "^[[:space:]]*(\[.*\][[:space:]]*)?(feat|fix|perf|refactor|test|build|ci|chore|deps)(\([^)]*\))?[[:space:]]*:"; then
               t=$(echo "$subj" | sed -E 's/^[[:space:]]*(\[.*\][[:space:]]*)?([a-zA-Z]+).*/\2/' | tr '[:upper:]' '[:lower:]')
               case "$t" in
                 feat|fix|perf|refactor|docs|test|build|ci|chore|deps) type="$t" ;;
@@ -202,7 +201,7 @@ jobs:
             if [[ "$subj" =~ \(#([0-9]+)\) ]]; then pr="#${BASH_REMATCH[1]}"; fi
             if [[ -z "$pr" && "$subj" =~ [Pp][Rr][[:space:]]*#([0-9]+) ]]; then pr="#${BASH_REMATCH[1]}"; fi
 
-            entry="- ${subj} (${short}) by ${author}"
+            entry="- ${subj} (${short}) by @${author}"
             [[ -n "$pr" ]] && entry="${entry} ${pr}"
             groups["$type"]+="${entry}\\n"
           done
@@ -214,15 +213,15 @@ jobs:
               case "$t" in
                 feat) h="✨ Features" ;;
                 fix) h="🐛 Fixes" ;;
-                perf) h="⚡ Performance" ;;
+                perf) h="⚡️ Performance" ;;
                 refactor) h="🧹 Refactoring" ;;
-                docs) h="📝 Docs" ;;
-                test) h="✅ Tests" ;;
-                build) h="🏗️ Build" ;;
-                ci) h="🔁 CI" ;;
+                #docs) h="📝 Docs" ;;
+                #test) h="✅ Tests" ;;
+                #build) h="🏗️ Build" ;;
+                #ci) h="🔁 CI" ;;
                 chore) h="🧺 Chore" ;;
                 deps) h="📦 Dependencies" ;;
-                other) h="Other" ;;
+                other) h="🍊 Other" ;;
               esac
               echo "## ${h}" >> "$file"
               printf "%b" "$content" >> "$file"
@@ -233,6 +232,12 @@ jobs:
           if ! grep -q "## " "$file"; then
             echo "- No changes detected for this module in the selected range." >> "$file"
           fi
+
+          
+          echo "## 📦 How install" >> "$file"
+          echo '```' >> "$file"
+          echo "go get github.com/lif0/pkg/${moduleName}@${{ steps.vars.outputs.version }}" >> "$file"
+          echo '```' >> "$file"
 
           echo "file=$file" >> "$GITHUB_OUTPUT"
           echo "Generated $file"
