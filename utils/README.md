@@ -14,49 +14,60 @@ Utils for Go
 
 ## Contents
 
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [API Reference](#api-reference)
-  - [EstimatePayloadOf](#function-estimatepayloadof)
-    - [Supported Types](#supported-types)
-    - [Performance Notes](#performance-notes)
-    - [Use Case](#use-case)
-    - [Examples](#examples)
-- [Roadmap](#roadmap)
-- [License](#license)
+- [Overview](#-overview)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Package: `reflect`](#-package-reflect)
+  - [Function: `EstimatePayloadOf`](#function-estimatepayloadof)
+    - [Supported Types](#-supported-types)
+    - [Performance](#performance-notes)
+    - [Use Case](#-use-case)
+    - [Examples](#-examples)
+- [Roadmap](#-roadmap)
+- [License](#-license)
 
 ---
 
-## Overview
+## 🚀 Overview
 
-This package provides tools for Go values.  
+The `utils` module provides a set of lightweight, focused utility packages designed to extend Go's standard library with commonly needed functionality. These packages follow Go's philosophy of simplicity and efficiency, offering well-tested solutions for everyday development challenges.
 
 ---
 
-## Requirements
+## ✅ Requirements
 
 - **Go 1.19 or higher**
 
-## Installation
+## 📦 Installation
 
-To install the package, run:
+To add this package to your project, use `go get`:
 
 ```bash
 go get github.com/lif0/pkg/utils@latest
 ```
 
+Import the reflect extension in your code:
+
+```go
+import "github.com/lif0/pkg/utils/reflect"
+```
+
 ---
 
-## API Reference
+## 📚 Package `reflect`
 
-### Function: EstimatePayloadOf
+### Function: `EstimatePayloadOf`
 
 ```go
 func EstimatePayloadOf(v any) int
 ```
 
-Returns an **approximate payload size (in bytes)** of the given value.
+Returns an **approximate payload size (in bytes)** of the given value. It is designed for efficiency and is allocation-free for supported types
+
+⚠️ **Return Value and Errors**
+
+- Returns the estimated size in bytes for supported types.
+- Returns **`reflect.ErrFailEstimatePayload`** = `-1` if the type is not supported or cannot be estimated.
 
 #### Performance Notes
 
@@ -73,7 +84,7 @@ Check:
 - [Benchmarks](/utils/reflect/estimate_payload_bench_test.go)
 - [Tests](/utils/reflect/estimate_payload_test.go)
 
-#### Supported Types
+#### ✅ Supported Types
 
 Scalar types (and pointers to them):
 
@@ -95,11 +106,11 @@ For `string` and `[]string`, the actual content size is summed.
 
 If the type is not supported, the function returns `reflect.ErrFailEstimatePayload(-1)`.
 
-#### Use Case
+#### 💡 Use Case
 
 Calculate request/response sizes for logging or monitoring, such as writing to a span in a database provider library.
 
-#### Examples
+#### 🧪 Examples
 
 Estimate an int value:
 
@@ -154,14 +165,19 @@ size := EstimatePayloadOf(&arr)
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
+
+The future direction of this package is community-driven! Ideas and contributions are highly welcome.
 
 ☹️ No idea
 
 Contributions and ideas are welcome! 🤗
 
+**Contributions:**
+Feel free to open an Issue to discuss a new idea or a Pull Request to implement it! 🤗
+
 ---
 
-## License
+## 📄 License
 
 [MIT](./LICENSE)
