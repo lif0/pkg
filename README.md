@@ -60,14 +60,14 @@
                     </a>
                 </td>
                 <td>
-                    <p>Utils for Go.</p>
+                    <p>Utils for Go</p>
                 </td>
                 <td>
                     <a href="https://goreportcard.com/report/github.com/lif0/pkg/utils">
                         <img src="https://goreportcard.com/badge/github.com/lif0/pkg/utils" />
                     </a>
                     <a href="https://coveralls.io/github/lif0/pkg">
-                    <img alt="utils coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json">
+                    <img alt="utils coverage" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lif0/pkg/refs/heads/main/.github/assets/badges/coverage-utils.json">
                     </a>
                 </td>
             </tr>

@@ -1,6 +1,6 @@
 # utils
 
-Utils for Go.
+Utils for Go
 
 📦 `go get github.com/lif0/pkg/utils@latest`  
 🧪 Requires **Go 1.19+**
