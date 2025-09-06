@@ -7,44 +7,52 @@ Concurrency utilities for Go
 
 [![build](https://github.com/lif0/pkg/workflows/build/badge.svg)](https://github.com/lif0/pkg/workflows/build/badge.svg)
 [![go reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/concurrency)
+![last version](https://img.shields.io/github/v/tag/lif0/pkg?label=latest&filter=concurrency/*)
 [![concurrency coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-concurrency.json)](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-concurrency.json)
 [![concurrency report card](https://goreportcard.com/badge/github.com/lif0/pkg/concurrency)](https://goreportcard.com/report/github.com/lif0/pkg/concurrency)
 
 ---
+
 ## Contents
 
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Features](#features)
+- [Overview](#-overview)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Features](#-features)
   - [Semaphore](#semaphore)
   - [WithLock](#withlock)
 - [Roadmap](#roadmap)
-- [License](#license)
+- [License](#-license)
 
 ---
 
-## Overview
+## 📋 Overview
 
 The `concurrency` package provides lightweight, efficient concurrency primitives for Go, designed for correctness and performance with minimal memory allocations. It simplifies concurrent programming tasks in Go applications.
 
 ---
 
-## Requirements
+## ⚙️ Requirements
 
 - **Go 1.19 or higher**
 
-## Installation
+## 📦 Installation
 
-To install the package, run:
+To add this package to your project, use `go get`:
 
 ```bash
 go get github.com/lif0/pkg/concurrency@latest
 ```
 
+Import the reflect extension in your code:
+
+```go
+import "github.com/lif0/pkg/concurrency"
+```
+
 ---
 
-## Features
+## ✨ Features
 
 ### Semaphore
 
@@ -66,7 +74,7 @@ func main() {
 
     // Acquire a slot
     sem.Acquire()
-    fmt.Printf("Acquired a slot, in use: %d/%d\n", sem.InUse(), sem.Cap())
+    fmt.Printf("Acquired a slot, in use: %d/%d\\n", sem.InUse(), sem.Cap())
     
     // Perform critical section work
     // ...
@@ -93,7 +101,7 @@ func main() {
 
     // Acquire is a no-op for unlimited semaphores
     sem.Acquire()
-    fmt.Printf("Acquired (no-op), in use: %d, cap: %d\n", sem.InUse(), sem.Cap())
+    fmt.Printf("Acquired (no-op), in use: %d, cap: %d\\n", sem.InUse(), sem.Cap())
 
     // Perform work
     // ...
@@ -119,17 +127,17 @@ import (
 func main() {
     // Create a semaphore with a capacity of 2
     sem := concurrency.NewSemaphore(2)
-    
+
     // Create a context with a timeout
     ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
     defer cancel()
 
     // Attempt to acquire a slot with context
     if err := sem.AcquireContext(ctx); err != nil {
-        fmt.Printf("Failed to acquire: %v\n", err)
+        fmt.Printf("Failed to acquire: %v\\n", err)
         return
     }
-    fmt.Printf("Acquired a slot with context, in use: %d/%d\n", sem.InUse(), sem.Cap())
+    fmt.Printf("Acquired a slot with context, in use: %d/%d\\n", sem.InUse(), sem.Cap())
 
     // Perform work
     // ...
@@ -156,7 +164,7 @@ func main() {
 
     // Acquire the only slot
     sem.Acquire()
-    fmt.Printf("Acquired a slot, in use: %d/%d\n", sem.InUse(), sem.Cap())
+    fmt.Printf("Acquired a slot, in use: %d/%d\\n", sem.InUse(), sem.Cap())
 
     // Try to acquire another slot without blocking
     if sem.TryAcquire() {
@@ -178,31 +186,31 @@ It guarantees that the lock will always be released, even if the action panics.
 
 ```go
 import (
-	"github.com/lif0/pkg/concurrency"
+ "github.com/lif0/pkg/concurrency"
 )
 
 func main() {
-	var mu sync.Mutex
-	counter := 0
-	var wg sync.WaitGroup
+ var mu sync.Mutex
+ counter := 0
+ var wg sync.WaitGroup
 
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
+ for i := 0; i < 5; i++ {
+  wg.Add(1)
         wg.Go(func() {
             for j := 0; j < 100; j++ {
-				concurrency.WithLock(&mu, func() {
-					counter++
-				})
-			}
+    concurrency.WithLock(&mu, func() {
+     counter++
+    })
+   }
         })
-	}
+ }
 
-	wg.Wait()
-	fmt.Println("Final counter:", counter) // Always 500
+ wg.Wait()
+ fmt.Println("Final counter:", counter) // Always 500
 }
 ```
 
-## Roadmap
+## 🗺️ Roadmap
 
 - FanIn/FanOut patterns for channel-based concurrency.
 - Future/Promise constructs for asynchronous programming.
@@ -212,6 +220,6 @@ Contributions and feature suggestions are welcome 🤗.
 
 ---
 
-## License
+## 📄 License
 
 [MIT](./LICENSE)

@@ -7,6 +7,7 @@ Utils for Go
 
 [![build](https://github.com/lif0/pkg/workflows/build/badge.svg)](https://github.com/lif0/pkg/workflows/build/badge.svg)
 [![Go Reference](https://pkg.go.dev/badge/github.com/lif0/pkg.svg)](https://pkg.go.dev/github.com/lif0/pkg/utils)
+![last version](https://img.shields.io/github/v/tag/lif0/pkg?label=latest&filter=utils/*)
 [![utils coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json)](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-utils.json)
 [![utils report card](https://goreportcard.com/badge/github.com/lif0/pkg/utils)](https://goreportcard.com/report/github.com/lif0/pkg/utils)
 
@@ -15,7 +16,7 @@ Utils for Go
 ## Contents
 
 - [Overview](#-overview)
-- [Requirements](#-requirements)
+- [Requirements](#requirements)
 - [Installation](#-installation)
 - [Package: `reflect`](#-package-reflect)
   - [Function: `EstimatePayloadOf`](#function-estimatepayloadof)
@@ -23,18 +24,18 @@ Utils for Go
     - [Performance](#performance-notes)
     - [Use Case](#-use-case)
     - [Examples](#-examples)
-- [Roadmap](#-roadmap)
+- [Roadmap](#roadmap)
 - [License](#-license)
 
 ---
 
-## 🚀 Overview
+## 📋 Overview
 
 The `utils` module provides a set of lightweight, focused utility packages designed to extend Go's standard library with commonly needed functionality. These packages follow Go's philosophy of simplicity and efficiency, offering well-tested solutions for everyday development challenges.
 
 ---
 
-## ✅ Requirements
+## ⚙️ Requirements
 
 - **Go 1.19 or higher**
 

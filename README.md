@@ -120,7 +120,7 @@ All packages are:
 
 ## Stability
 
-This repository follows [utils versioning](https://semver.org/).  
+This repository follows [semantic versioning](https://semver.org/).  
 All exported APIs are stable, and breaking changes will be reflected in the major version.
 
 Releases are tagged and versioned. You can safely pin versions for use in production.
@@ -135,9 +135,9 @@ To contribute a package, feature, or bugfix:
 
 - Coverage must be ≥95%
 - All code must be tested and benchmarked
-- Very desirable use standard library imports are allowed
+- Use of standard library imports is highly desirable and allowed; avoid external dependencies where possible
 - APIs should be minimal, idiomatic, and efficient
-- Conventional Commits [(see)](https://www.conventionalcommits.org/en/v1.0.0/)
+- Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 To propose a new idea or package, please open an issue or discussion with:
 
