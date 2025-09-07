@@ -13,6 +13,8 @@
 - [Installation](#-installation)
 - [Features](#-features)
   - [ReentrantMutex](#reentrantmutex)
+    - [Performance](#performance)
+    - [Example](#example)
 - [Roadmap](#roadmap)
 - [License](#-license)
 
@@ -58,7 +60,25 @@ Important details:
 - Panics on unlocking from a different goroutine than the owner.
 - Panics if recursion count goes negative.
 
-#### Example: Basic Usage
+#### Performance
+
+```bash
+goos: darwin
+goarch: arm64
+pkg: github.com/lif0/pkg/sync
+cpu: Apple M2
+BenchmarkMutexes/sync.Mutex-8         	                    155_743_212	         7.684 ns/op       0 B/op	       0 allocs/op
+BenchmarkMutexes/sync.RWMutex-8       	                    71_501_988	        16.49 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexes/sync.ReentrantMutex-8         	            65_857_020	        17.82 ns/op	       0 B/op	       0 allocs/op
+
+BenchmarkMutexesParallel/sync.MutexParallel-8               13_736_034          73.02 ns/op        0 B/op          0 allocs/op
+BenchmarkMutexesParallel/sync.RWMutexParallel-8             14_190_777          84.19 ns/op        0 B/op          0 allocs/op
+BenchmarkMutexesParallel/sync.ReentrantMutexParallel-8      35_037_007          34.84 ns/op        0 B/op          0 allocs/op
+```
+
+#### Example
+
+##### Example: Basic Usage
 
 ```go
 package main
@@ -86,7 +106,7 @@ func main() {
 }
 ```
 
-#### Example: Recursive Locking
+##### Example: Recursive Locking
 
 ```go
 package main
@@ -115,7 +135,7 @@ func main() {
 }
 ```
 
-#### Example: Contention Handling
+##### Example: Contention Handling
 
 ```go
 package main
