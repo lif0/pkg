@@ -23,7 +23,7 @@
 
 The `concurrency` package provides lightweight, efficient concurrency primitives for Go, designed for correctness and performance with minimal memory allocations. It simplifies concurrent programming tasks in Go applications.
 
-For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/sync](https://pkg.go.dev/github.com/lif0/pkg/concurrency).
+For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/concurrency](https://pkg.go.dev/github.com/lif0/pkg/concurrency).
 
 ---
 

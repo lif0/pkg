@@ -26,7 +26,7 @@
 
 The `utils` module provides a set of lightweight, focused utility packages designed to extend Go's standard library with commonly needed functionality. These packages follow Go's philosophy of simplicity and efficiency, offering well-tested solutions for everyday development challenges.
 
-For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/sync](https://pkg.go.dev/github.com/lif0/pkg/utils).
+For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/utils](https://pkg.go.dev/github.com/lif0/pkg/utils).
 
 ---
 
