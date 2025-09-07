@@ -20,44 +20,37 @@ var (
 	ErrUnlockWithNegativeCount = errors.New("unlock with negative count")
 )
 
-const (
-	// mutexFree indicates that the mutex is not held by any goroutine.
-	mutexFreeFlag = -1
-)
-
-// ReentrantMutex is a reentrant mutual exclusion lock.
+// A ReentrantMutex is a reentrant mutual exclusion lock.
 // The zero value for a ReentrantMutex is an unlocked mutex.
 //
-// ReentrantMutex allows the same goroutine to acquire the lock multiple times
-// without deadlock. It tracks the owning goroutine and recursion level.
-// Only the owning goroutine may unlock it, and the mutex is released when
-// the recursion level reaches zero.
+// A ReentrantMutex must not be copied after first use.
+//
+// In the terminology of [the Go memory model],
+// the n'th call to [ReentrantMutex.Unlock] by the owning goroutine "synchronizes before"
+// the m'th call to [ReentrantMutex.Lock] for any n < m, accounting for recursion levels.
+// ReentrantMutex allows the same goroutine to acquire the lock multiple times without deadlock.
+// It tracks the owning goroutine and recursion level; only the owning goroutine may unlock it,
+// and the mutex is released when the recursion level reaches zero.
 //
 // ReentrantMutex implements the sync.Locker interface.
+//
+// [the Go memory model]: https://go.dev/ref/mem
 type ReentrantMutex struct {
 	_ noCopy
 
-	hCall atomic.Int64
-	hID   atomic.Int64
+	hCall   atomic.Int64
+	hID     atomic.Int64
+	notFree atomic.Bool
 }
 
-// New creates and initializes a new ReentrantMutex.
-//
-// The returned mutex is initially free and implements the sync.Locker interface.
-func New() *ReentrantMutex {
-	rmu := ReentrantMutex{
-		hID:   atomic.Int64{},
-		hCall: atomic.Int64{},
-	}
-
-	rmu.hID.Store(mutexFreeFlag)
-
-	return &rmu
+// NewReentrantMutex creates and initializes a new ReentrantMutex.
+func NewReentrantMutex() *ReentrantMutex {
+	return &ReentrantMutex{}
 }
 
 // Lock locks rm.
 // If the lock is already held by the current goroutine, the recursion count is incremented.
-// Otherwise, Lock spins until the lock is acquired.
+// Otherwise, the calling goroutine blocks until the rmutex is available.
 func (rm *ReentrantMutex) Lock() {
 	gID := goid.Get()
 
@@ -66,22 +59,28 @@ func (rm *ReentrantMutex) Lock() {
 		return
 	}
 
-	for !rm.hID.CompareAndSwap(mutexFreeFlag, gID) {
+	for !rm.notFree.CompareAndSwap(false, true) {
 		runtime.Gosched()
 	}
 
+	rm.hID.Store(gID)
 	rm.hCall.Store(1)
 }
 
 // Unlock unlocks rm.
-// It must be called by the goroutine that owns the lock.
-// If the recursion count is >1, it is decremented and nil is returned.
+// It panics if rm is not locked on entry to Unlock.
+//
+// Unlock must be called by the goroutine that owns the lock.
+// If the recursion count is greater than 1, it is decremented.
 // If the recursion count reaches 0, the lock is released.
-// Unlock returns an error if called on an unlocked mutex or by a non-owner goroutine.
+//
+// A locked [ReentrantMutex] is associated with a particular goroutine.
+// It is not allowed for one goroutine to lock a ReentrantMutex and then
+// arrange for another goroutine to unlock it.
 func (rm *ReentrantMutex) Unlock() {
 	gID := goid.Get()
 
-	if rm.hID.Load() == mutexFreeFlag {
+	if !rm.notFree.Load() {
 		panic(ErrUnlockOfUnlockedMutex)
 	}
 
@@ -94,6 +93,7 @@ func (rm *ReentrantMutex) Unlock() {
 		panic(ErrUnlockWithNegativeCount)
 	}
 	if newCount == 0 {
-		rm.hID.Store(mutexFreeFlag)
+		rm.hID.Store(-1)
+		rm.notFree.Store(false)
 	}
 }

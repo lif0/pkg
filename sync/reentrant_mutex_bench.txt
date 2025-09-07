@@ -1,0 +1,16 @@
+Running tool: /usr/local/go/bin/go test -benchmem -run=^$ -bench ^BenchmarkMutexes$ github.com/lif0/pkg/sync -v
+Running tool: /usr/local/go/bin/go test -benchmem -run=^$ -bench ^BenchmarkMutexesParallel$ github.com/lif0/pkg/sync -v
+
+goos: darwin
+goarch: arm64
+pkg: github.com/lif0/pkg/sync
+cpu: Apple M2
+BenchmarkMutexes/sync.Mutex-8         	                    155_743_212	         7.684 ns/op       0 B/op	       0 allocs/op
+BenchmarkMutexes/sync.RWMutex-8       	                    71_501_988	        16.49 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMutexes/sync.ReentrantMutex-8         	            65_857_020	        17.82 ns/op	       0 B/op	       0 allocs/op
+
+BenchmarkMutexesParallel/sync.MutexParallel-8               13_736_034          73.02 ns/op        0 B/op          0 allocs/op
+BenchmarkMutexesParallel/sync.RWMutexParallel-8             14_190_777          84.19 ns/op        0 B/op          0 allocs/op
+BenchmarkMutexesParallel/sync.ReentrantMutexParallel-8      35_037_007          34.84 ns/op        0 B/op          0 allocs/op
+PASS
+ok      github.com/lif0/pkg/sync        9.824s

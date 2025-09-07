@@ -12,7 +12,7 @@ import (
 func TestMutexRecursive(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 	mx.Lock()
@@ -30,7 +30,7 @@ func TestMutexRecursive(t *testing.T) {
 func TestUnlockOfUnlockedMutex(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 	require.PanicsWithError(t, ErrUnlockOfUnlockedMutex.Error(), func() {
 		mx.Unlock()
 	})
@@ -39,7 +39,7 @@ func TestUnlockOfUnlockedMutex(t *testing.T) {
 func TestUnlockFromAnotherGoroutine(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 
@@ -62,7 +62,7 @@ func TestMutualExclusion(t *testing.T) {
 	t.Parallel()
 
 	v := make(map[int]int)
-	rm := New()
+	rm := NewReentrantMutex()
 
 	wg := sync.WaitGroup{}
 	for range 1_000 {
@@ -80,49 +80,10 @@ func TestMutualExclusion(t *testing.T) {
 	wg.Wait()
 }
 
-func TestMutexPerformance(t *testing.T) {
-	t.Skip()
-	stdLibMx := testing.Benchmark(func(b *testing.B) {
-		b.SetParallelism(10)
-
-		v := make(map[int]int)
-		mx := new(sync.Mutex)
-
-		b.ResetTimer()
-
-		b.RunParallel(func(pb *testing.PB) {
-			for pb.Next() {
-				mx.Lock()
-				v[rand.N[int](10e9)]++
-				mx.Unlock()
-			}
-		})
-	})
-
-	myMx := testing.Benchmark(func(b *testing.B) {
-		b.SetParallelism(10)
-
-		v := make(map[int]int)
-		mx := New()
-
-		b.ResetTimer()
-
-		b.RunParallel(func(pb *testing.PB) {
-			for pb.Next() {
-				mx.Lock()
-				v[rand.N[int](10e9)]++
-				mx.Unlock()
-			}
-		})
-	})
-
-	require.LessOrEqual(t, float64(stdLibMx.NsPerOp())/float64(myMx.NsPerOp()), 4.0)
-}
-
 func TestUnlockWithNegativeCount(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 	mx.hCall.Store(0) // Artificially set to trigger negative count branch
@@ -135,7 +96,7 @@ func TestUnlockWithNegativeCount(t *testing.T) {
 func TestRecursivePartialUnlockContention(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 	mx.Lock() // recursion level 2
@@ -181,7 +142,7 @@ func TestRecursivePartialUnlockContention(t *testing.T) {
 func TestContentionSpin(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 
@@ -208,7 +169,7 @@ func TestContentionSpin(t *testing.T) {
 func TestMultipleRecursiveLevels(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	mx.Lock()
 	mx.Lock()
@@ -246,7 +207,7 @@ func TestMultipleRecursiveLevels(t *testing.T) {
 func TestNewMutexIsUnlocked(t *testing.T) {
 	t.Parallel()
 
-	mx := New()
+	mx := NewReentrantMutex()
 
 	// Should be able to lock immediately
 	mx.Lock()
@@ -256,4 +217,44 @@ func TestNewMutexIsUnlocked(t *testing.T) {
 	require.PanicsWithError(t, ErrUnlockOfUnlockedMutex.Error(), func() {
 		mx.Unlock()
 	})
+}
+
+func TestMutexPerformance(t *testing.T) {
+	// t.Skip()
+
+	stdLibMx := testing.Benchmark(func(b *testing.B) {
+		b.SetParallelism(10)
+
+		v := make(map[int]int)
+		mx := new(sync.Mutex)
+
+		b.ResetTimer()
+
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				mx.Lock()
+				v[rand.N[int](10e9)]++
+				mx.Unlock()
+			}
+		})
+	})
+
+	rmMx := testing.Benchmark(func(b *testing.B) {
+		b.SetParallelism(10)
+
+		v := make(map[int]int)
+		mx := NewReentrantMutex()
+
+		b.ResetTimer()
+
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				mx.Lock()
+				v[rand.N[int](10e9)]++
+				mx.Unlock()
+			}
+		})
+	})
+
+	require.LessOrEqual(t, float64(stdLibMx.NsPerOp())/float64(rmMx.NsPerOp()), 4.0)
 }
