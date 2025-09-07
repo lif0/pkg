@@ -11,6 +11,7 @@ on:
       - '**.go'
       - 'utils/**'
       - 'concurrency/**'
+      - 'sync/**'
       - '.github/workflows/**'
   pull_request:
     branches:
@@ -29,7 +30,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        module: [utils, concurrency]
+        module: [utils, concurrency, sync]
     defaults:
       run:
         working-directory: ${{ matrix.module }}
@@ -79,4 +80,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} 
           #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
           parallel-finished: true
-          carryforward: "utils,concurrency"
+          carryforward: "utils,concurrency,sync"
