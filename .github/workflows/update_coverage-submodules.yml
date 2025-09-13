@@ -52,7 +52,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No badge changes. Skipping commit."
           else
-            git commit -m "tests(coverage-*.json): recalculate submodules coverage [skip ci]"
+            git commit -m "[skip-ci]tests(coverage.json): recalculate submodules coverage"
             # Пушим обратно в ту же ветку
             git push origin HEAD:${GITHUB_REF#refs/heads/}
           fi
