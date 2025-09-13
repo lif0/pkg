@@ -14,7 +14,8 @@
 - [Features](#-features)
   - [Semaphore](#semaphore)
   - [WithLock](#withlock)
-  - [FutureAction](#futureAction)
+  - [FutureAction](#futureaction)
+  - [Promise](#promise)
 - [Roadmap](#roadmap)
 - [License](#-license)
 
@@ -256,6 +257,84 @@ func main() {
     future := concurrency.NewFutureAction(callback)
     result := future.Get()
     fmt.Printf("Result: %d\n", result) // Output: Result: 42
+}
+```
+
+### Promise
+
+The `Promise` type represents a writable, single-assignment container for a future value. It allows setting a value exactly once (subsequent sets are ignored) and provides a `Future` for reading the value asynchronously. This is similar to the Promise/Future pattern in other languages, enabling clean handling of asynchronous results with thread safety via atomic operations and mutexes.
+
+The internal channel is buffered (capacity 1) and closed after setting the value. Aliases `PromiseError` and `FutureError` are provided for error handling.
+
+#### Example: Basic Usage
+
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+    "github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+    promise := concurrency.NewPromise[string]()
+    go func() {
+        time.Sleep(time.Second)
+        promise.Set("Cake")
+    }()
+
+    future := promise.GetFuture()
+    value := future.Get()
+    fmt.Println(value) // Output: Cake
+}
+```
+
+#### Example: Error Handling with PromiseError
+
+```go
+package main
+
+import (
+    "errors"
+    "fmt"
+    "time"
+    "github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+    promise := concurrency.NewPromise[error]()
+    go func() {
+        time.Sleep(time.Second)
+        promise.Set(errors.New("Something went wrong"))
+    }()
+
+    future := promise.GetFuture()
+    err := future.Get()
+    if err != nil {
+        fmt.Printf("Error: %v\n", err) // Output: Error: Something went wrong
+    }
+}
+```
+
+#### Example: Wrapping Existing Channel with NewFuture
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+    ch := make(chan int, 1)
+    ch <- 42
+    close(ch)
+
+    future := concurrency.NewFuture(ch)
+    value := future.Get()
+    fmt.Printf("Value: %d\n", value) // Output: Value: 42
 }
 ```
 
