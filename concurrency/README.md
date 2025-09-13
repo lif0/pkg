@@ -14,6 +14,7 @@
 - [Features](#-features)
   - [Semaphore](#semaphore)
   - [WithLock](#withlock)
+  - [FutureAction](#futureAction)
 - [Roadmap](#roadmap)
 - [License](#-license)
 
@@ -202,6 +203,59 @@ func main() {
 
  wg.Wait()
  fmt.Println("Final counter:", counter) // Always 500
+}
+```
+
+### FutureAction
+
+The `FutureAction` type provides an abstraction over a channel that models a task and its result. It allows executing a computation asynchronously in a goroutine and retrieving the result later via a blocking call. This is similar to the Future pattern in other languages, providing a simple way to handle asynchronous results without manual channel management.
+
+The channel is closed after the result is sent, ensuring proper resource cleanup.
+
+#### Example: Basic Usage
+
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+
+    "github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+    callback := func() any {
+        time.Sleep(time.Second)
+        return "success"
+    }
+
+    future := concurrency.NewFutureAction(callback)
+    result := future.Get()
+    fmt.Println(result) // Output: success
+}
+```
+
+#### Example: Generic Type Usage
+
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+    "github.com/lif0/pkg/concurrency"
+)
+
+func main() {
+    callback := func() int {
+        time.Sleep(time.Second)
+        return 42
+    }
+
+    future := concurrency.NewFutureAction(callback)
+    result := future.Get()
+    fmt.Printf("Result: %d\n", result) // Output: Result: 42
 }
 ```
 
