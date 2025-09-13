@@ -16,7 +16,7 @@ package concurrency
 //			return "success"
 //		}
 //
-//		future := NewFutureTask(callback)
+//		future := NewFutureAction(callback)
 //		result := future.Get()
 //		fmt.Println(result) // Output: success
 //	}
