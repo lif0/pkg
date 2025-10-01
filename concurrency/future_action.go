@@ -30,7 +30,7 @@ type FutureAction[T any] struct {
 // The channel is closed after sending the result to allow safe ranging or detection of completion.
 func NewFutureAction[T any](action func() T) *FutureAction[T] {
 	future := &FutureAction[T]{
-		result: make(chan T),
+		result: make(chan T, 1),
 	}
 
 	go func() {
