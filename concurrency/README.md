@@ -16,6 +16,10 @@
   - [WithLock](#withlock)
   - [FutureAction](#futureaction)
   - [Promise](#promise)
+  - [chanx: Channel Extension](#chanx-channel-extension)
+    - [FanIn](#fanin)
+    - [ToRecvChans](#torecvchans)
+    - [ToSendChans](#tosendchans)
 - [Roadmap](#roadmap)
 - [License](#-license)
 
@@ -338,11 +342,143 @@ func main() {
 }
 ```
 
+### chanx: Channel Extension
+
+The `chanx` subpackage provides extension for working with channels.
+
+#### FanIn
+
+`FanIn` merges multiple input channels into a single output channel. It reads concurrently from each input channel and forwards values to the output. The output channel is closed when all input channels are closed or the context is canceled. This is a non-blocking, concurrent fan-in implementation that respects context cancellation. The order of values in the output is not guaranteed.
+
+##### Example: Basic Usage
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/lif0/pkg/concurrency/chanx"
+)
+
+func main() {
+	ctx := context.Background()
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+
+	go func() {
+		ch1 <- "from ch1"
+		close(ch1)
+	}()
+	go func() {
+		ch2 <- "from ch2"
+		close(ch2)
+	}()
+
+	out := chanx.FanIn(ctx, ch1, ch2)
+	for v := range out {
+		fmt.Println(v) // Output may vary: from ch1, from ch2
+	}
+}
+```
+
+##### Example: Concurrent Usage with ToRecvChans
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/lif0/pkg/concurrency/chanx"
+)
+
+func main() {
+	ctx := context.Background()
+	chans := make([]chan int, 10)
+
+	for i := 0; i < len(chans); i++ {
+		chans[i] = make(chan int)
+		go func(ch chan int) {
+			defer close(ch)
+			ch <- 1
+            ch <- 2
+		}(chans[i])
+	}
+
+	out := chanx.FanIn(ctx, chanx.ToRecvChans(chans)...)
+	sum := 0
+	for v := range out {
+		sum += v
+	}
+	fmt.Println("Sum:", sum) // Output: Sum: 30
+}
+```
+
+#### ToRecvChans
+
+`ToRecvChans` converts a slice of bidirectional channels to a slice of receive-only channels. This ensures safe passing to functions expecting read-only channels.
+
+Complexity: time O(n), memory O(n).
+
+##### Example
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/lif0/pkg/concurrency/chanx"
+)
+
+func main() {
+	chans := []chan int{make(chan int), make(chan int)}
+	recvChans := chanx.ToRecvChans(chans)
+	fmt.Printf("Type: %T\n", recvChans) // Output: Type: []<-chan int
+}
+```
+
+#### ToSendChans
+
+`ToSendChans` converts a slice of bidirectional channels to a slice of send-only channels. This ensures safe passing to functions expecting write-only channels.
+
+Complexity: time O(n), memory O(n).
+
+##### Example
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/lif0/pkg/concurrency/chanx"
+)
+
+func main() {
+	chans := []chan string{make(chan string), make(chan string)}
+	sendChans := chanx.ToSendChans(chans)
+	fmt.Printf("Type: %T\n", sendChans) // Output: Type: []chan<- string
+}
+```
+
 ## 🗺️ Roadmap
 
-- FanIn/FanOut patterns for channel-based concurrency.
-- Future/Promise constructs for asynchronous programming.
-- Michael-Scott Queue (MS Queue) for lock-free concurrent queues.
+- [ ] Channel extensions
+  - [x] FanIn pattern
+  - [ ] FanOut pattern
+  - [ ] Dynamic select
+  - [ ] Transform pattern
+- [x] Semaphore structure
+- [x] WithLock extension
+- [x] Future construct for asynchronous programming
+- [x] Promise construct for asynchronous programming
+- [ ] Michael-Scott Queue (MS Queue) for lock-free concurrent queues
+
+---
 
 Contributions and feature suggestions are welcome 🤗.
 
