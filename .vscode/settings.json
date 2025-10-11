@@ -8,6 +8,7 @@
     "commitish",
     "covermode",
     "coverprofile",
+    "errx",
     "esac",
     "mapfile",
     "Nnil",
