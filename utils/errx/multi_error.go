@@ -43,3 +43,8 @@ func (errs MultiError) MaybeUnwrap() error {
 		return errs
 	}
 }
+
+// IsEmpty returns true if MultiError has no errors, otherwise false.
+func (errs MultiError) IsEmpty() bool {
+	return len(errs) == 0
+}
