@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Changed
 
+## [v1.1.0]
+### Added
+- [PKG-1](https://github.com/lif0/pkg/issues/1) Add `chanx.FanIn` pattern.
+### Fixed
+### Changed
+
 ## [v1.0.1]
 ### Added
 - [PKG-11](https://github.com/lif0/pkg/issues/11) Introduce `FutureAction` pattern.
