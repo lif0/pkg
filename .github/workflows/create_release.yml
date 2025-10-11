@@ -159,7 +159,7 @@ jobs:
               for s in "${scopes[@]}"; do
                 s_trim="$(echo "$s" | xargs)"
                 s_trim_lc="${s_trim,,}"
-                if [[ "$s_trim_lc" == "$module_name_lc" || "$s_trim_lc" == "$module_base_lc" ]]; then
+                if [[ "$s_trim_lc" == "$module_name_lc" || "$s_trim_lc" == "$module_base_lc" || "$s_trim_lc" == "$module_name_lc/"* ]]; then
                   commits+=("$sha")
                   break
                 fi
@@ -215,7 +215,7 @@ jobs:
                 fix) h="🐛 Fixes" ;;
                 perf) h="⚡️ Performance" ;;
                 refactor) h="🧹 Refactoring" ;;
-                #docs) h="📝 Docs" ;;
+                docs) h="📝 Docs" ;;
                 #test) h="✅ Tests" ;;
                 #build) h="🏗️ Build" ;;
                 #ci) h="🔁 CI" ;;
