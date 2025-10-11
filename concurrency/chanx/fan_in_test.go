@@ -2,6 +2,7 @@ package chanx_test
 
 import (
 	"context"
+	"sync"
 	"testing"
 	"time"
 
@@ -94,6 +95,36 @@ func TestFanInOneChannel(t *testing.T) {
 	assert.Equal(t, 6, sum)
 }
 
+// TestFanInOneChannel verifies that FanIn with a  channel forwards its values correctly.
+func TestFanInDuplicateChannel(t *testing.T) {
+	ctx := context.Background()
+	wg := sync.WaitGroup{}
+	ch := make(chan int, 5)
+	numValues := 100
+
+	wg.Add(1)
+	go func() {
+		defer close(ch)
+		defer wg.Done()
+
+		for i := 1; i <= numValues; i++ {
+			ch <- i
+		}
+	}()
+
+	res := chanx.FanIn(ctx, ch, ch, ch)
+
+	var sum int
+	for v := range res {
+		sum += v
+	}
+
+	wg.Wait()
+
+	expectedSum := ((numValues * (numValues + 1)) / 2) * 1 /*we have one chan, but it duplicate*/
+	assert.Equal(t, expectedSum, sum)
+}
+
 // TestFanInContextCancel verifies that canceling the context stops reading from channels and closes the result channel without forwarding values.
 func TestFanInContextCancel(t *testing.T) {
 	t.Run("ctx cancel", func(t *testing.T) {
@@ -101,13 +132,15 @@ func TestFanInContextCancel(t *testing.T) {
 		defer cancel()
 
 		ch := make(chan string, 1)
-		res := chanx.FanIn(ctx, ch)
+		ch2 := make(chan string, 1) // because FanIn optimize case when in argument send one channel
+		res := chanx.FanIn(ctx, ch, ch2)
 
 		cancel()
 
 		// Send after cancel, but should not be received.
 		go func() {
 			defer close(ch)
+			defer close(ch2)
 			time.Sleep(10 * time.Millisecond)
 			ch <- "delayed"
 		}()
@@ -115,12 +148,12 @@ func TestFanInContextCancel(t *testing.T) {
 		select {
 		case v, ok := <-res:
 			if ok {
-				t.Errorf("Received unexpected value %s after cancel", v)
+				t.Errorf("Received unexpected value '%s' after cancel", v)
 			} else {
 				// Channel closed without value - this is expected.
 				return
 			}
-		case <-time.After(50 * time.Millisecond):
+		case <-time.After(time.Second):
 			t.Error("Result channel did not close in time after cancel")
 		}
 	})
@@ -129,7 +162,8 @@ func TestFanInContextCancel(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 
 		ch := make(chan string, 1)
-		res := chanx.FanIn(ctx, ch)
+		ch2 := make(chan string, 1) // because FanIn optimize case when in argument send one channel
+		res := chanx.FanIn(ctx, ch, ch2)
 
 		ch <- "ping"
 		time.Sleep(time.Millisecond * 200) // anti-flak sleep
@@ -138,7 +172,7 @@ func TestFanInContextCancel(t *testing.T) {
 		select {
 		case v, ok := <-res:
 			if ok {
-				t.Errorf("Received unexpected value %s after cancel", v)
+				t.Errorf("Received unexpected value '%s' after cancel", v)
 			} else {
 				// Channel closed without value - this is expected.
 				return

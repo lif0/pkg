@@ -35,6 +35,16 @@ import (
 //		}
 //	}
 func FanIn[T any](ctx context.Context, chans ...<-chan T) <-chan T {
+	if len(chans) == 0 { // if chans is empty then return already closed channel
+		res := make(chan T)
+		close(res)
+		return nil
+	}
+
+	if len(chans) == 1 { // if chans have only one chan then return it
+		return chans[0]
+	}
+
 	res := make(chan T)
 	wg := &sync.WaitGroup{}
 
