@@ -16,7 +16,7 @@ import (
 //
 //	func main() {
 //		ctx := context.Background()
-//		chans := make([]chan string, 100)
+//		chans := make([]chan int, 100)
 //
 //		for i := 0; i < numChans; i++ {
 //			chans[i] = make(chan int)
@@ -29,10 +29,12 @@ import (
 //			}(i)
 //		}
 //
+//		sum := 0
 //		out := chanx.FanIn[int](ctx, chanx.ToRecvChans[int](chans)...)
 //		for v := range out {
-//			fmt.Println(v)
+//			sum += v
 //		}
+//		fmt.Println(sum)
 //	}
 func FanIn[T any](ctx context.Context, chans ...<-chan T) <-chan T {
 	if len(chans) == 0 { // if chans is empty then return already closed channel
