@@ -12,7 +12,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v2.0.0] 2025-10-23
 ### Added
 - Set minimum go version as 1.22
-
-## [v1.0.1]
-### Added
-- [PKG-16] feat(utils/errx): add MultiError structure;
