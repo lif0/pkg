@@ -35,7 +35,7 @@ For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/concurrency]
 
 ## ⚙️ Requirements
 
-- **Go 1.21 or higher**
+- **go 1.22 or higher**
 
 ## 📦 Installation
 
