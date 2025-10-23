@@ -9,18 +9,18 @@
 ## Contents
 
 - [Overview](#-overview)
-- [Requirements](#-requirements)
+- [Requirements](#️-requirements)
 - [Installation](#-installation)
 - [Features](#-features)
   - [Semaphore](#semaphore)
   - [WithLock](#withlock)
   - [FutureAction](#futureaction)
   - [Promise](#promise)
-  - [chanx: Channel Extension](#chanx-channel-extension)
-    - [FanIn](#fanin)
-    - [ToRecvChans](#torecvchans)
-    - [ToSendChans](#tosendchans)
-- [Roadmap](#roadmap)
+- [Package: `chanx`](#package-chanx-channel-extension)
+  - [FanIn](#fanin)
+  - [ToRecvChans](#torecvchans)
+  - [ToSendChans](#tosendchans)
+- [Roadmap](#️-roadmap)
 - [License](#-license)
 
 ---
@@ -342,15 +342,15 @@ func main() {
 }
 ```
 
-### chanx: Channel Extension
+## Package `chanx`: Channel Extension
 
 The `chanx` subpackage provides extension for working with channels.
 
-#### FanIn
+### FanIn
 
 `FanIn` merges multiple input channels into a single output channel. It reads concurrently from each input channel and forwards values to the output. The output channel is closed when all input channels are closed or the context is canceled. This is a non-blocking, concurrent fan-in implementation that respects context cancellation. The order of values in the output is not guaranteed.
 
-##### Example: Basic Usage
+#### Example: Basic Usage
 
 ```go
 package main
@@ -383,7 +383,7 @@ func main() {
 }
 ```
 
-##### Example: Concurrent Usage with ToRecvChans
+#### Example: Concurrent Usage with ToRecvChans
 
 ```go
 package main
@@ -417,13 +417,13 @@ func main() {
 }
 ```
 
-#### ToRecvChans
+### ToRecvChans
 
 `ToRecvChans` converts a slice of bidirectional channels to a slice of receive-only channels. This ensures safe passing to functions expecting read-only channels.
 
 Complexity: time O(n), memory O(n).
 
-##### Example
+#### Example
 
 ```go
 package main
@@ -441,13 +441,13 @@ func main() {
 }
 ```
 
-#### ToSendChans
+### ToSendChans
 
 `ToSendChans` converts a slice of bidirectional channels to a slice of send-only channels. This ensures safe passing to functions expecting write-only channels.
 
 Complexity: time O(n), memory O(n).
 
-##### Example
+#### Example
 
 ```go
 package main
