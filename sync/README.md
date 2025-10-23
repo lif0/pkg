@@ -9,13 +9,13 @@
 ## Contents
 
 - [Overview](#-overview)
-- [Requirements](#-requirements)
+- [Requirements](#️-requirements)
 - [Installation](#-installation)
 - [Features](#-features)
   - [ReentrantMutex](#reentrantmutex)
     - [Performance](#performance)
     - [Example](#example)
-- [Roadmap](#roadmap)
+- [Roadmap](#️-roadmap)
 - [License](#-license)
 
 ---
