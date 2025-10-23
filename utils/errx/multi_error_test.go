@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lif0/pkg/utils/errx"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMultiError_Error(t *testing.T) {
@@ -113,4 +114,12 @@ func TestMultiError_MaybeUnwrap(t *testing.T) {
 			}
 		})
 	}
+}
+
+var globalErr = errx.MultiError{}
+
+func TestMultiError_Other(t *testing.T) {
+	assert.Len(t, globalErr, 0)
+	assert.True(t, globalErr.IsEmpty())
+	assert.NoError(t, globalErr.MaybeUnwrap())
 }

@@ -1,6 +1,6 @@
 module github.com/lif0/pkg/sync
 
-go 1.23
+go 1.21
 
 require (
 	github.com/petermattis/goid v0.0.0-20250904145737-900bdf8bb490
