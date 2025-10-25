@@ -150,3 +150,10 @@ To propose a new idea or package, please open an issue or discussion with:
 ## License
 
 [MIT](./LICENSE)
+
+---
+
+## TODO common repo
+
+- [ ] Add linter in ci
+- [ ] Add go sec in ci
