@@ -64,7 +64,6 @@ func Test_LinkedList_Append(t *testing.T) {
 		// assert
 		assert.Equal(t, 1, l.Len())
 		got := collect(&l)
-		// Итерация “видит” 2 узла, хотя Len()==1 — следствие того, что Append не сбрасывает node.Next
 		assert.Equal(t, []int{1, 9}, got)
 	})
 }
@@ -163,13 +162,12 @@ func Test_LinkedList_Remove(t *testing.T) {
 		t.Parallel()
 		var l internal.LinkedList[int]
 		l.Append(&internal.Node[int]{Val: 1})
-		foreign := &internal.Node[int]{Val: 999} // не в списке
+		foreign := &internal.Node[int]{Val: 999}
 
 		// act
 		l.Remove(foreign)
 
 		// assert
-		// Структура связей не изменилась (узел 1 всё ещё голова), но размер уменьшился с 1 до 0
 		assert.Equal(t, []int{1}, collect(&l))
 		assert.Equal(t, 0, l.Len())
 	})
@@ -182,7 +180,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 		// act
 		l.Remove(n)
-		l.Remove(n) // повторно по тому же узлу
+		l.Remove(n)
 
 		// assert
 		assert.Equal(t, -1, l.Len())

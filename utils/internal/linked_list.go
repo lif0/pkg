@@ -12,6 +12,7 @@ type Node[T any] struct {
 	Next *Node[T]
 }
 
+// Remove ...
 // time: O(1); mem: O(1)
 func (l *LinkedList[T]) Remove(node *Node[T]) {
 	if node == nil {
@@ -24,17 +25,16 @@ func (l *LinkedList[T]) Remove(node *Node[T]) {
 	}
 
 	//  If a next node exists, set its previous pointer to the current node’s previous.
-	//  Есть следующий, значит у следующего удаляем предыдущий(то есть себя)
 	if node.Next != nil {
 		node.Next.Prev = node.Prev
 	}
 
-	// Если мы равны голове, значит, теперь голова равна следующему
+	// if the node and the head is equal, set to head node's next.
 	if node == l.head {
 		l.head = l.head.Next
 	}
 
-	// если мы хвост, значит хвост теперь равен предыдущему от текущего
+	// if the node and the tail is equal, set to tail node's previous.
 	if node == l.tail {
 		l.tail = l.tail.Prev
 	}
@@ -42,6 +42,7 @@ func (l *LinkedList[T]) Remove(node *Node[T]) {
 	l.size -= 1
 }
 
+// Append ...
 // time: O(1); mem: O(1)
 func (l *LinkedList[T]) Append(node *Node[T]) {
 	if l.tail == nil {
@@ -56,16 +57,19 @@ func (l *LinkedList[T]) Append(node *Node[T]) {
 	l.size += 1
 }
 
+// GetHead ...
 // time: O(1); mem: O(1)
 func (l *LinkedList[T]) GetHead() *Node[T] {
 	return l.head
 }
 
+// Len ...
 // time: O(1); mem: O(1)
 func (l *LinkedList[T]) Len() int {
 	return l.size
 }
 
+// Iter ...
 func (l *LinkedList[T]) Iter() func(func(int, T) bool) {
 	return func(yield func(int, T) bool) {
 		i := 0
