@@ -34,7 +34,7 @@ For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/utils](https
 
 ## ⚙️ Requirements
 
-- **go 1.22 or higher**
+- **go 1.23 or higher**
 
 ## 📦 Installation
 
