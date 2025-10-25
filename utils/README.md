@@ -19,6 +19,8 @@
     - [Examples](#-examples)
 - [Package: `errx`](#-package-errx)
   - [MultiError](#multierror)
+- [Package: `typex`](#-package-typex)
+  - [OrderedMap](#multierror)
 - [Roadmap](#️-roadmap)
 - [License](#-license)
 
@@ -169,6 +171,8 @@ size := EstimatePayloadOf(&arr)
 
 ## 📚 Package `errx`
 
+Provide additional feature for error.
+
 ### MultiError
 
 MultiError is a slice of errors implementing the error interface.
@@ -208,6 +212,58 @@ for _, job := range jobs {
 	}
 }
 return me.MaybeUnwrap()
+```
+
+## 📚 Package `typex`
+
+Provide additional golang type.
+
+### OrderedMap
+
+OrderedMap is a map[Type]Type1-like collection that preserves the order in which keys were inserted. It behaves like a regular map but allows deterministic iteration over its elements.
+
+Useful:
+Imagine you are making a closer or graceful shutdown lib, and you need to register/unregister some functions/service in it, and finally handle them in the order they were added. Use it structure. You are welcome🤗
+
+The structure provide provice
+
+#### API
+
+| Func                                                           | Complexity (time / mem)      |
+| -------------------------------------------------------------- | ---------------------------- |
+| `(m *OrderedMap[K, V]) Get(key K) (V, bool)`                   | O(1) / O(1)                  |
+| `(m *OrderedMap[K, V]) Put(key K, value V)`                    | O(1) / O(1)                  |
+| `(m *OrderedMap[K, V]) Delete(key K)`                          | O(1) / O(1)                  |
+| `(m *OrderedMap[K, V]) GetValues() []V`                        | O(N) / O(N)                  |
+| `(m *OrderedMap[K, V]) Iter() []V`                             | for i,v := range m.Iter() {} |
+| `Delete[K comparable, V any](m *OrderedMap[K, V], key K)`      | O(1) / O(1)                  |
+
+
+#### Benchmark
+
+???
+
+#### Examples
+
+```go
+import "github.com/lif0/pkg/utils/typex"
+
+
+func main() {
+  m := typex.NewOrderedMap[string, int]()
+  
+  m.Put("key", 10)
+
+  v, ok := m.Get("key") // v = 10
+  
+  m.Delete("key") // or build-in func typex.Delete(m, "key")
+
+  for i,v := range m.Iter() {
+    fmt.Println(i,v)
+  }
+
+  fmt.Println( len( m.GetValues() ) ) // will be print '0'
+}
 ```
 
 ## 🗺️ Roadmap
