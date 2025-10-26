@@ -65,7 +65,7 @@ func TestMutualExclusion(t *testing.T) {
 	rm := NewReentrantMutex()
 
 	wg := sync.WaitGroup{}
-	for range 1_000 {
+	for i := 0; i < 1000; i++ {
 		wg.Add(1)
 
 		go func() {

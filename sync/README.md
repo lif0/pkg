@@ -30,7 +30,7 @@ For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/sync](https:
 
 ## ⚙️ Requirements
 
-- **go 1.22 or higher**
+- **go 1.18 or higher**
 
 ## 📦 Installation
 
