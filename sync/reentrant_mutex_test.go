@@ -1,7 +1,7 @@
 package sync
 
 import (
-	"math/rand/v2"
+	"math/rand"
 	"sync"
 	"testing"
 	"time"
@@ -72,7 +72,7 @@ func TestMutualExclusion(t *testing.T) {
 			defer wg.Done()
 
 			rm.Lock()
-			v[rand.N[int](10e9)]++
+			v[rand.Intn(10e9)]++
 			defer rm.Unlock()
 		}()
 	}
@@ -233,7 +233,7 @@ func TestMutexPerformance(t *testing.T) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				mx.Lock()
-				v[rand.N[int](10e9)]++
+				v[rand.Intn(10e9)]++
 				mx.Unlock()
 			}
 		})
@@ -250,7 +250,7 @@ func TestMutexPerformance(t *testing.T) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				mx.Lock()
-				v[rand.N[int](10e9)]++
+				v[rand.Intn(10e9)]++
 				mx.Unlock()
 			}
 		})
