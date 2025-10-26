@@ -2,6 +2,7 @@ package internal
 
 type LinkedList[T any] struct {
 	size int
+	pool []*Node[T]
 	head *Node[T]
 	tail *Node[T]
 }
@@ -10,6 +11,16 @@ type Node[T any] struct {
 	Val  T
 	Prev *Node[T]
 	Next *Node[T]
+}
+
+func NewLinkedList[T any](cap ...int) *LinkedList[T] {
+	// var llCap int
+
+	// if len(cap) > 0 {
+	// 	llCap = cap[0]
+	// }
+
+	return &LinkedList[T]{}
 }
 
 // Remove ...

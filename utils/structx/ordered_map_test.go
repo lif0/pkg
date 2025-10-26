@@ -1,39 +1,19 @@
-package typex_test
+package structx_test
 
 import (
 	"testing"
 
-	"github.com/lif0/pkg/utils/typex"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/lif0/pkg/utils/structx"
 )
-
-// // arrange
-// func newOrderedMap[K comparable, V any]() *typex.OrderedMap[K, V] {
-// 	var m typex.OrderedMap[K, V]
-// 	initOrderedMapDict(&m)
-// 	return &m
-// }
-
-// // arrange
-// func initOrderedMapDict[K comparable, V any](m *typex.OrderedMap[K, V]) {
-// 	mv := reflect.ValueOf(m).Elem()
-// 	dictField := mv.FieldByName("dict")
-// 	// assert.NotNil(t, dictField, "dict field must exist")
-
-// 	// make map with the exact field type, without importing internal types
-// 	newMap := reflect.MakeMapWithSize(dictField.Type(), 0)
-
-// 	// set unexported field via unsafe
-// 	dictPtr := unsafe.Pointer(dictField.UnsafeAddr())
-// 	reflect.NewAt(dictField.Type(), dictPtr).Elem().Set(newMap)
-// }
 
 func Test_OrderedMap_Get(t *testing.T) {
 	t.Parallel()
 
 	t.Run("ok/after-put", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 
 		// act
 		m.Put("x", 42)
@@ -46,7 +26,7 @@ func Test_OrderedMap_Get(t *testing.T) {
 
 	t.Run("edge/unknown-key", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 
 		// act
 		v, ok := m.Get("b")
@@ -58,7 +38,7 @@ func Test_OrderedMap_Get(t *testing.T) {
 
 	t.Run("edge/zero-value-safe-get", func(t *testing.T) {
 		t.Parallel()
-		var m typex.OrderedMap[string, int]
+		var m structx.OrderedMap[string, int]
 
 		// act
 		v, ok := m.Get("kek")
@@ -74,7 +54,7 @@ func Test_OrderedMap_Put(t *testing.T) {
 
 	t.Run("panic/nil-dict", func(t *testing.T) {
 		t.Parallel()
-		var m typex.OrderedMap[int, int]
+		var m structx.OrderedMap[int, int]
 
 		// act + assert
 		assert.Panics(t, func() {
@@ -84,7 +64,7 @@ func Test_OrderedMap_Put(t *testing.T) {
 
 	t.Run("ok/insert-order", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 
 		// act
 		m.Put("a", 1)
@@ -98,7 +78,7 @@ func Test_OrderedMap_Put(t *testing.T) {
 
 	t.Run("ok/update-existing-preserve-order", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 1)
 		m.Put("b", 2)
 
@@ -121,7 +101,7 @@ func Test_OrderedMap_Delete(t *testing.T) {
 
 	t.Run("ok/delete-existing", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 1)
 		m.Put("b", 2)
 		m.Put("c", 3)
@@ -139,12 +119,12 @@ func Test_OrderedMap_Delete(t *testing.T) {
 
 	t.Run("ok/build-in-delete-not-existing", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 1)
 		m.Put("c", 3)
 
 		// act
-		typex.Delete(m, "b")
+		structx.Delete(m, "b")
 
 		// assert
 		_, okB := m.Get("b")
@@ -156,7 +136,7 @@ func Test_OrderedMap_Delete(t *testing.T) {
 
 	t.Run("edge/nil-dict", func(t *testing.T) {
 		t.Parallel()
-		var m typex.OrderedMap[int, int] // nil
+		var m structx.OrderedMap[int, int] // nil
 
 		// act: should't panic
 		m.Delete(1)
@@ -171,13 +151,13 @@ func Test_OrderedMap_BuiltInDelete(t *testing.T) {
 
 	t.Run("ok/delete", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 1)
 		m.Put("b", 2)
 		m.Put("c", 3)
 
 		// act
-		typex.Delete(m, "b")
+		structx.Delete(m, "b")
 
 		// assert
 		_, okB := m.Get("b")
@@ -189,12 +169,12 @@ func Test_OrderedMap_BuiltInDelete(t *testing.T) {
 
 	t.Run("ok/delete-not-existing", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 1)
 		m.Put("c", 3)
 
 		// act
-		typex.Delete(m, "b")
+		structx.Delete(m, "b")
 
 		// assert
 		_, okB := m.Get("b")
@@ -206,10 +186,10 @@ func Test_OrderedMap_BuiltInDelete(t *testing.T) {
 
 	t.Run("ok/nil", func(t *testing.T) {
 		t.Parallel()
-		var m *typex.OrderedMap[int, int] // nil
+		var m *structx.OrderedMap[int, int] // nil
 
 		// act: should't panic
-		typex.Delete(m, 1)
+		structx.Delete(m, 1)
 
 		// assert
 		assert.Nil(t, m)
@@ -217,10 +197,10 @@ func Test_OrderedMap_BuiltInDelete(t *testing.T) {
 
 	t.Run("ok/empty", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[int, int]()
+		m := structx.NewOrderedMap[int, int]()
 
 		// act: should't panic
-		typex.Delete(m, 1)
+		structx.Delete(m, 1)
 
 		// assert: the struct still empty
 		assert.Equal(t, 0, len(m.GetValues()))
@@ -232,7 +212,7 @@ func Test_OrderedMap_GetValues(t *testing.T) {
 
 	t.Run("edge/empty", func(t *testing.T) {
 		t.Parallel()
-		var m typex.OrderedMap[string, int]
+		var m structx.OrderedMap[string, int]
 
 		// act
 		vals := m.GetValues()
@@ -244,7 +224,7 @@ func Test_OrderedMap_GetValues(t *testing.T) {
 
 	t.Run("ok/single", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 		m.Put("a", 7)
 
 		// act
@@ -257,7 +237,7 @@ func Test_OrderedMap_GetValues(t *testing.T) {
 
 	t.Run("ok/multiple", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[int, string]()
+		m := structx.NewOrderedMap[int, string]()
 		m.Put(10, "x")
 		m.Put(20, "y")
 		m.Put(30, "z")
@@ -275,7 +255,7 @@ func Test_NewOrderedMap(t *testing.T) {
 
 	t.Run("ok/empty", func(t *testing.T) {
 		t.Parallel()
-		m := typex.NewOrderedMap[string, int]()
+		m := structx.NewOrderedMap[string, int]()
 
 		// act
 		v, ok := m.Get("missing")

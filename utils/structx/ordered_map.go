@@ -1,4 +1,4 @@
-package typex
+package structx
 
 import (
 	"github.com/lif0/pkg/utils/internal"
@@ -16,9 +16,14 @@ type OrderedMap[K comparable, V any] struct {
 }
 
 // NewOrderedMap returns a new empty OrderedMap.
-func NewOrderedMap[K comparable, V any]() *OrderedMap[K, V] {
+func NewOrderedMap[K comparable, V any](cap ...int) *OrderedMap[K, V] {
+	var dictCap int
+	if len(cap) > 0 {
+		dictCap = cap[0]
+	}
+
 	return &OrderedMap[K, V]{
-		dict: make(map[K]*internal.Node[V]),
+		dict: make(map[K]*internal.Node[V], dictCap),
 		list: internal.LinkedList[V]{},
 	}
 }
@@ -116,7 +121,7 @@ func (this *OrderedMap[K, V]) Iter() func(func(int, V) bool) {
 //
 //	var om = NewOrderedMap[string, int]()
 //	om.Put("x", 1)
-//	typex.Delete(om, "x")
+//	structx.Delete(om, "x")
 func Delete[Type comparable, Type1 any](m *OrderedMap[Type, Type1], key Type) {
 	if m == nil {
 		return
