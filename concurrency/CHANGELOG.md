@@ -9,15 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Changed
 
-## [v2.0.1] 2025-MM-DD
+## [v1.2.0] 2025-MM-DD
 ### Added
 - [PKG-20] Add SyncValue
 ### Fixed
 ### Changed
-
-## [v2.0.0] 2025-10-23
-### Added
-- Set minimum go version as 1.22
 
 ## [v1.1.0]
 ### Added
