@@ -78,9 +78,8 @@ func NewSyncValue[T any](value ...T) *SyncValue[T] {
 //	})
 func (sv *SyncValue[T]) MutateValue(f func(v *T)) {
 	sv.mu.Lock()
-	defer sv.mu.Unlock()
-
 	f(&sv.v)
+	sv.mu.Unlock()
 }
 
 // ReadValue provides shared, read access to the wrapped value by invoking the
@@ -103,7 +102,6 @@ func (sv *SyncValue[T]) MutateValue(f func(v *T)) {
 //	})
 func (sv *SyncValue[T]) ReadValue(f func(v *T)) {
 	sv.mu.RLock()
-	defer sv.mu.RUnlock()
-
 	f(&sv.v)
+	sv.mu.RUnlock()
 }

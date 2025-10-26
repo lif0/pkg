@@ -16,6 +16,7 @@
   - [WithLock](#withlock)
   - [FutureAction](#futureaction)
   - [Promise](#promise)
+  - [SyncValue](#syncvalue)
 - [Package: `chanx`](#package-chanx-channel-extension)
   - [FanIn](#fanin)
   - [ToRecvChans](#torecvchans)
@@ -342,6 +343,141 @@ func main() {
 }
 ```
 
+### SyncValue
+
+SyncValue is a generic wrapper around a value of any type `T` that allows
+concurrent access with safe read and write operations protected by an RWMutex.
+
+It provides two methods: `MutateValue` and `ReadValue`.
+
+- `MutateValue` gives exclusive write access to the wrapped value.
+- `ReadValue` gives shared read access to the wrapped value.
+
+Inside `MutateValue`, mu.Lock() / mu.Unlock() are used.
+Inside `ReadValue`, mu.RLock() / mu.RUnlock() are used.
+
+#### Important ⚠️
+
+##### MutateValue
+
+- Use mu.Lock() / mu.Unlock()
+- The pointer is only safe to use within the callback.
+- **Do not store the pointer** beyond the duration of the callback.
+- Avoid calling other methods of SyncValue from within the callback to prevent lock re-entrancy issues (Go mutexes are not re-entrant).
+
+##### ReadValue
+
+- Use mu.RLock() / mu.RUnlock()
+- The pointer is only safe to use within the callback.
+- **Do not store the pointer** beyond the duration of the callback.
+- If `T` (or its fields) contains reference types (e.g., slices/maps), copying *v will be shallow. To safely use the value after the callback returns, make a defensive deep copy.
+
+##### Examples
+
+###### Example: with simple type
+
+```go
+import "github.com/lif0/pkg/concurrency"
+
+
+func main() {
+    sv = concurrency.NewSyncValue[int]()
+
+    sv.MutateValue(func(v *int) { *v++ })
+
+    var out int
+    c.sv.ReadValue(func(v *int) { out = *v }) // safeCopy
+
+    fmt.Println(out) // will be print `1`
+}
+```
+
+###### Example: with slice
+
+```go
+import "github.com/lif0/pkg/concurrency"
+
+
+func main() {
+    sv = concurrency.NewSyncValue[[]int](
+
+    sv.MutateValue(func(v *int) { *v = append(*v, 10) })
+
+    var out []int
+    c.sv.ReadValue(func(v *int) { 
+        out = make([]int, len(*v)) // alloc slice (because copy don't do that)
+        copy(out, *v)
+    })
+
+    fmt.Println(out) // will be print `1`
+}
+```
+
+###### Example: with complex type
+
+```go
+import "github.com/lif0/pkg/concurrency"
+
+type User struct {
+	ID    string
+	Roles []string
+}
+
+type State struct {
+	Users map[string]User
+}
+
+func main() {
+    sv := concurrency.NewSyncValue[User](State{
+		Users: make(map[string]User),
+	})
+
+    sv.MutateValue(func(s *State) {
+		s.Users["u1"] = User{ID: "u1", Roles: []string{"reader"}}
+		s.Users["u2"] = User{ID: "u2", Roles: []string{"writer", "admin"}}
+	})
+
+    var usersSnap map[string]User
+	sv.ReadValue(func(s *State) {
+		usersSnap = make(map[string]User, len(s.Users))
+		for id, u := range s.Users {
+			// make a deep copy of Roles; otherwise the underlying array would be shared.
+			usersSnap[id] = User{
+				ID:    u.ID,
+				Roles: append([]string(nil), u.Roles...),
+			}
+
+            // OR
+            // usersSnap[id] = make([]string, len(u.Roles))
+            // copy(usersSnap[id].Roles, u.Roles)
+		}
+	})
+
+    fmt.Println("users snapshot:", usersSnap)
+}
+```
+
+###### Example: Race. Incorrect example
+
+
+```go
+import "github.com/lif0/pkg/concurrency"
+
+func main() {
+	// BAD: race on slice due to shallow copy of the slice header
+	sv := concurrency.NewSyncValue([]int{1, 2, 3})
+
+	// ❌ BAD: store a shallow copy of the slice header outside the callback.
+    // After the callback returns, `shared` still points to the same underlying array
+    // as the internal value inside SyncValue.
+	var shared []int
+	sv.ReadValue(func(v *[]int) {
+		shared = *v  // SHALLOW COPY: ptr/len/cap copied, but the array is shared.
+	})
+}
+```
+
+
 ## Package `chanx`: Channel Extension
 
 The `chanx` subpackage provides extension for working with channels.
@@ -476,6 +612,8 @@ func main() {
 - [x] WithLock extension
 - [x] Future construct for asynchronous programming
 - [x] Promise construct for asynchronous programming
+- [x] Add SyncValue
+- [ ] Add Watcher
 - [ ] Michael-Scott Queue (MS Queue) for lock-free concurrent queues
 
 ---
