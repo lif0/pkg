@@ -1,6 +1,6 @@
 module github.com/lif0/pkg/concurrency
 
-go 1.22
+go 1.18
 
 require github.com/stretchr/testify v1.11.1
 
