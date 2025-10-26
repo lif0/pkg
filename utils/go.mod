@@ -1,6 +1,6 @@
 module github.com/lif0/pkg/utils
 
-go 1.23
+go 1.19
 
 require github.com/stretchr/testify v1.11.1
 
