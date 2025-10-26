@@ -17,6 +17,10 @@
   - [FutureAction](#futureaction)
   - [Promise](#promise)
   - [SyncValue](#syncvalue)
+    - [MutateValue()](#mutatevalue)
+    - [ReadValue()](#readvalue)
+    - [Benchmark](#benchmark)
+    - [Examples](#examples)
 - [Package: `chanx`](#package-chanx-channel-extension)
   - [FanIn](#fanin)
   - [ToRecvChans](#torecvchans)
@@ -356,25 +360,48 @@ It provides two methods: `MutateValue` and `ReadValue`.
 Inside `MutateValue`, mu.Lock() / mu.Unlock() are used.
 Inside `ReadValue`, mu.RLock() / mu.RUnlock() are used.
 
-#### Important ⚠️
+🍀 Use it always when you need `any+sync.Mutex`
 
-##### MutateValue
+#### MutateValue
 
 - Use mu.Lock() / mu.Unlock()
 - The pointer is only safe to use within the callback.
 - **Do not store the pointer** beyond the duration of the callback.
 - Avoid calling other methods of SyncValue from within the callback to prevent lock re-entrancy issues (Go mutexes are not re-entrant).
 
-##### ReadValue
+#### ReadValue
 
 - Use mu.RLock() / mu.RUnlock()
 - The pointer is only safe to use within the callback.
 - **Do not store the pointer** beyond the duration of the callback.
 - If `T` (or its fields) contains reference types (e.g., slices/maps), copying *v will be shallow. To safely use the value after the callback returns, make a defensive deep copy.
 
-##### Examples
+#### Benchmark
 
-###### Example: with simple type
+```bash
+goos: darwin
+goarch: arm64
+pkg: github.com/lif0/pkg/concurrency
+cpu: Apple M2
+```
+
+**SyncValue[int64] vs Atomic.Int64:**
+
+```bash
+Benchmark_Int64_Mixed/SyncValue-8               36694729                32.53 ns/op           0 B/op          0 allocs/op
+Benchmark_Int64_Mixed/Atomic.Int64-8            471930460               2.649 ns/op           0 B/op          0 allocs/op
+```
+
+**SyncValue[complex] vs Atomic.Value/Pointer:**
+
+```bash
+Benchmark_Complex_Mixed/SyncValue-8            14479608             82.42 ns/op          22 B/op          0 allocs/op
+Benchmark_Complex_Mixed/Atomic.Value-8         1000000              1247 ns/op           28952 B/op       0 allocs/op
+```
+
+#### Examples
+
+##### Example: with simple type
 
 ```go
 import "github.com/lif0/pkg/concurrency"
@@ -392,14 +419,14 @@ func main() {
 }
 ```
 
-###### Example: with slice
+##### Example: with slice
 
 ```go
 import "github.com/lif0/pkg/concurrency"
 
 
 func main() {
-    sv = concurrency.NewSyncValue[[]int](
+    sv = concurrency.NewSyncValue[[]int]([]int{})
 
     sv.MutateValue(func(v *int) { *v = append(*v, 10) })
 
@@ -409,11 +436,11 @@ func main() {
         copy(out, *v)
     })
 
-    fmt.Println(out) // will be print `1`
+    fmt.Println(out) // will be print `[10]`
 }
 ```
 
-###### Example: with complex type
+##### Example: with complex type
 
 ```go
 import "github.com/lif0/pkg/concurrency"
@@ -457,8 +484,7 @@ func main() {
 }
 ```
 
-###### Example: Race. Incorrect example
-
+##### Example: Race. Incorrect example
 
 ```go
 import "github.com/lif0/pkg/concurrency"
@@ -476,7 +502,6 @@ func main() {
 	})
 }
 ```
-
 
 ## Package `chanx`: Channel Extension
 
