@@ -28,12 +28,12 @@ func makeStrs(n int) ([]string, [][]string) {
 	return keys, vals
 }
 
-func makeStrEmpties(n int) ([]string, []struct{}) {
+func makeStrEmpties(n int) ([]string, []complexStruct) {
 	keys := make([]string, n)
-	vals := make([]struct{}, n)
+	vals := make([]complexStruct, n)
 	for i := 0; i < n; i++ {
 		keys[i] = "k_" + itoa(i)
-		vals[i] = struct{}{}
+		vals[i] = complexStruct{Val: i, Nums: []int{n}}
 	}
 	return keys, vals
 }
@@ -68,6 +68,7 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 	b.Run("put/orderedMap", func(b *testing.B) {
 		b.ResetTimer()
 		b.ReportAllocs()
+
 		for n := 0; n < b.N; n++ {
 			m := structx.NewOrderedMap[int, int](N)
 			for i := 0; i < N; i++ {
@@ -79,6 +80,7 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 	b.Run("put/builtin", func(b *testing.B) {
 		b.ResetTimer()
 		b.ReportAllocs()
+
 		for n := 0; n < b.N; n++ {
 			m := make(map[int]int, N)
 			for i := 0; i < N; i++ {
@@ -86,6 +88,8 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 			}
 		}
 	})
+
+	b.Log("------------------------------")
 
 	b.Run("get_hit/orderedMap", func(b *testing.B) {
 		b.ResetTimer()
@@ -96,6 +100,7 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 		}
 		b.ResetTimer()
 		var sink int
+
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
 				v, _ := m.Get(keys[i])
@@ -116,39 +121,45 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 		var sink int
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
-				sink ^= m[keys[i]]
+				v, _ := m[keys[i]]
+				sink ^= v
 			}
 		}
 		_ = sink
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("delete/orderedMap", func(b *testing.B) {
-		b.ResetTimer()
 		b.ReportAllocs()
+		m := structx.NewOrderedMap[int, int](N)
+		for i := 0; i < N; i++ {
+			m.Put(keys[i], vals[i])
+		}
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := structx.NewOrderedMap[int, int](N)
 			for i := 0; i < N; i++ {
-				m.Put(keys[i], vals[i])
-			}
-			for i := 0; i < N; i++ {
-				m.Delete(keys[i])
+				structx.Delete(m, keys[i])
 			}
 		}
 	})
 
 	b.Run("delete/builtin", func(b *testing.B) {
-		b.ResetTimer()
 		b.ReportAllocs()
+		m := make(map[int]int, N)
+		for i := 0; i < N; i++ {
+			m[keys[i]] = vals[i]
+		}
+
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := make(map[int]int, N)
-			for i := 0; i < N; i++ {
-				m[keys[i]] = vals[i]
-			}
 			for i := 0; i < N; i++ {
 				delete(m, keys[i])
 			}
 		}
 	})
+
+	b.Log("------------------------------")
 
 	b.Run("iterate_values/orderedMap", func(b *testing.B) {
 		b.ResetTimer()
@@ -160,7 +171,7 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 		b.ResetTimer()
 		var sink int
 		for n := 0; n < b.N; n++ {
-			for v := range m.GetValues() {
+			for _, v := range m.Iter() {
 				sink ^= v
 			}
 		}
@@ -190,9 +201,10 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 	keys, vals := makeStrs(N)
 
 	b.Run("put/ordered", func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for n := 0; n < b.N; n++ {
-			m := structx.NewOrderedMap[string, []string]()
+			m := structx.NewOrderedMap[string, []string](N)
 			for i := 0; i < N; i++ {
 				m.Put(keys[i], vals[i])
 			}
@@ -200,6 +212,7 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 	})
 
 	b.Run("put/builtin", func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for n := 0; n < b.N; n++ {
 			m := make(map[string][]string, N)
@@ -209,9 +222,11 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 		}
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("get_hit/ordered", func(b *testing.B) {
 		b.ReportAllocs()
-		m := structx.NewOrderedMap[string, []string]()
+		m := structx.NewOrderedMap[string, []string](N)
 		for i := 0; i < N; i++ {
 			m.Put(keys[i], vals[i])
 		}
@@ -220,7 +235,6 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
 				v, _ := m.Get(keys[i])
-				// потребляем длину, чтобы компилятор не выкинул
 				if len(v) > 0 {
 					sink ^= len(v[0])
 				}
@@ -239,7 +253,7 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 		var sink int
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
-				v := m[keys[i]]
+				v, _ := m[keys[i]]
 				if len(v) > 0 {
 					sink ^= len(v[0])
 				}
@@ -248,46 +262,49 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 		_ = sink
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("delete/ordered", func(b *testing.B) {
 		b.ReportAllocs()
+		m := structx.NewOrderedMap[string, []string](N)
+		for i := 0; i < N; i++ {
+			m.Put(keys[i], vals[i])
+		}
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := structx.NewOrderedMap[string, []string]()
 			for i := 0; i < N; i++ {
-				m.Put(keys[i], vals[i])
-			}
-			for i := 0; i < N; i++ {
-				m.Delete(keys[i])
+				structx.Delete(m, keys[i])
 			}
 		}
 	})
 
 	b.Run("delete/builtin", func(b *testing.B) {
 		b.ReportAllocs()
+		m := make(map[string][]string, N)
+		for i := 0; i < N; i++ {
+			m[keys[i]] = vals[i]
+		}
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := make(map[string][]string, N)
-			for i := 0; i < N; i++ {
-				m[keys[i]] = vals[i]
-			}
 			for i := 0; i < N; i++ {
 				delete(m, keys[i])
 			}
 		}
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("iterate_values/ordered", func(b *testing.B) {
 		b.ReportAllocs()
-		m := structx.NewOrderedMap[string, []string]()
+		m := structx.NewOrderedMap[string, []string](N)
 		for i := 0; i < N; i++ {
 			m.Put(keys[i], vals[i])
 		}
 		b.ResetTimer()
 		var sink int
 		for n := 0; n < b.N; n++ {
-			vs := m.GetValues()
-			for i := 0; i < len(vs); i++ {
-				if len(vs[i]) > 1 {
-					sink ^= len(vs[i][1])
-				}
+			for range m.Iter() {
+				sink ^= 1
 			}
 		}
 		_ = sink
@@ -312,14 +329,15 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 	})
 }
 
-func Benchmark_OrderedMap_vs_Builtin_StringEmptyStruct(b *testing.B) {
+func Benchmark_OrderedMap_vs_Builtin_StringComplexStruct(b *testing.B) {
 	const N = 1_0000
 	keys, vals := makeStrEmpties(N)
 
 	b.Run("put/ordered", func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for n := 0; n < b.N; n++ {
-			m := structx.NewOrderedMap[string, struct{}]()
+			m := structx.NewOrderedMap[string, complexStruct](N)
 			for i := 0; i < N; i++ {
 				m.Put(keys[i], vals[i])
 			}
@@ -327,18 +345,21 @@ func Benchmark_OrderedMap_vs_Builtin_StringEmptyStruct(b *testing.B) {
 	})
 
 	b.Run("put/builtin", func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for n := 0; n < b.N; n++ {
-			m := make(map[string]struct{}, N)
+			m := make(map[string]complexStruct, N)
 			for i := 0; i < N; i++ {
 				m[keys[i]] = vals[i]
 			}
 		}
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("get_hit/ordered", func(b *testing.B) {
 		b.ReportAllocs()
-		m := structx.NewOrderedMap[string, struct{}]()
+		m := structx.NewOrderedMap[string, complexStruct](N)
 		for i := 0; i < N; i++ {
 			m.Put(keys[i], vals[i])
 		}
@@ -357,7 +378,7 @@ func Benchmark_OrderedMap_vs_Builtin_StringEmptyStruct(b *testing.B) {
 
 	b.Run("get_hit/builtin", func(b *testing.B) {
 		b.ReportAllocs()
-		m := make(map[string]struct{}, N)
+		m := make(map[string]complexStruct, N)
 		for i := 0; i < N; i++ {
 			m[keys[i]] = vals[i]
 		}
@@ -374,43 +395,48 @@ func Benchmark_OrderedMap_vs_Builtin_StringEmptyStruct(b *testing.B) {
 		_ = sink
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("delete/ordered", func(b *testing.B) {
 		b.ReportAllocs()
+		m := structx.NewOrderedMap[string, complexStruct](N)
+		for i := 0; i < N; i++ {
+			m.Put(keys[i], vals[i])
+		}
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := structx.NewOrderedMap[string, struct{}]()
 			for i := 0; i < N; i++ {
-				m.Put(keys[i], vals[i])
-			}
-			for i := 0; i < N; i++ {
-				m.Delete(keys[i])
+				structx.Delete(m, keys[i])
 			}
 		}
 	})
 
 	b.Run("delete/builtin", func(b *testing.B) {
 		b.ReportAllocs()
+		m := make(map[string]complexStruct, N)
+		for i := 0; i < N; i++ {
+			m[keys[i]] = vals[i]
+		}
+		b.ResetTimer()
 		for n := 0; n < b.N; n++ {
-			m := make(map[string]struct{}, N)
-			for i := 0; i < N; i++ {
-				m[keys[i]] = vals[i]
-			}
 			for i := 0; i < N; i++ {
 				delete(m, keys[i])
 			}
 		}
 	})
 
+	b.Log("------------------------------")
+
 	b.Run("iterate_values/ordered", func(b *testing.B) {
 		b.ReportAllocs()
-		m := structx.NewOrderedMap[string, struct{}]()
+		m := structx.NewOrderedMap[string, complexStruct](N)
 		for i := 0; i < N; i++ {
 			m.Put(keys[i], vals[i])
 		}
 		b.ResetTimer()
 		var sink int
 		for n := 0; n < b.N; n++ {
-			vs := m.GetValues()
-			for i := 0; i < len(vs); i++ {
+			for range m.Iter() {
 				sink ^= 1
 			}
 		}
@@ -419,7 +445,7 @@ func Benchmark_OrderedMap_vs_Builtin_StringEmptyStruct(b *testing.B) {
 
 	b.Run("iterate_values/builtin_range", func(b *testing.B) {
 		b.ReportAllocs()
-		m := make(map[string]struct{}, N)
+		m := make(map[string]complexStruct, N)
 		for i := 0; i < N; i++ {
 			m[keys[i]] = vals[i]
 		}

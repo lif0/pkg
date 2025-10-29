@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v2.1.0] 2025-11-XX
 ### Added
-- Set minimum go version as 1.23
-- Add struct OrderedMap[K]V;
+- [PKG-18] Set minimum go version as 1.23
+- [PKG-18] Add struct OrderedMap[K]V;
+- [PKG-28] Add struct ObjectPool[T];
 ### Fixed
 ### Changed
 

@@ -8,6 +8,59 @@ import (
 	"github.com/lif0/pkg/utils/structx"
 )
 
+func Test_OrderedMap_Iter(t *testing.T) {
+	t.Parallel()
+
+	t.Run("ok/iter-kv", func(t *testing.T) {
+		t.Parallel()
+		m := structx.NewOrderedMap[int, int](10)
+		res := 0
+
+		// act
+		for i := range 10 {
+			m.Put(i+1, i+1)
+		}
+		for k, v := range m.Iter() {
+			res += k + v
+		}
+
+		// assert
+		assert.Equal(t, 110, res)
+	})
+
+	t.Run("ok/iter-kv-2", func(t *testing.T) {
+		t.Parallel()
+		m := structx.NewOrderedMap[int, int]()
+
+		// act
+		for i := range 10 {
+			m.Put(i, i)
+		}
+
+		// assert
+		expected := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+		gotKey := make([]int, 0, 10)
+		gotValue := make([]int, 0, 10)
+		for k, v := range m.Iter() {
+			gotKey = append(gotKey, k)
+			gotValue = append(gotValue, v)
+		}
+		assert.Equal(t, expected, gotKey)
+		assert.Equal(t, expected, gotValue)
+	})
+
+	t.Run("ok/iter-kv-3", func(t *testing.T) {
+		t.Parallel()
+		m := structx.NewOrderedMap[int, int]()
+
+		m.Put(1, 1)
+
+		m.Iter()(func(i1, i2 int) bool {
+			return false
+		})
+	})
+}
+
 func Test_OrderedMap_Get(t *testing.T) {
 	t.Parallel()
 

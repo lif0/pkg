@@ -4,6 +4,11 @@ import (
 	"github.com/lif0/pkg/utils/internal"
 )
 
+type kv[K any, V any] struct {
+	K K
+	V V
+}
+
 // OrderedMap is a map[Type]Type1-like collection that preserves the order
 // in which keys were inserted. It behaves like a regular map but
 // allows deterministic iteration over its elements.
@@ -11,20 +16,22 @@ import (
 // OrderedMap is useful when both quick key-based access and
 // predictable iteration order are desired.
 type OrderedMap[K comparable, V any] struct {
-	dict map[K]*internal.Node[V]
-	list internal.LinkedList[V]
+	dict    map[K]*internal.ChainLink[kv[K, V]]
+	list    internal.Chain[kv[K, V]]
+	objPool *ObjectPool[internal.ChainLink[kv[K, V]]]
 }
 
 // NewOrderedMap returns a new empty OrderedMap.
-func NewOrderedMap[K comparable, V any](cap ...int) *OrderedMap[K, V] {
-	var dictCap int
-	if len(cap) > 0 {
-		dictCap = cap[0]
+func NewOrderedMap[K comparable, V any](size ...uint32) *OrderedMap[K, V] {
+	var cap uint32 = 0
+	if len(size) > 0 && size[0] > 0 {
+		cap = size[0]
 	}
 
 	return &OrderedMap[K, V]{
-		dict: make(map[K]*internal.Node[V], dictCap),
-		list: internal.LinkedList[V]{},
+		dict:    make(map[K]*internal.ChainLink[kv[K, V]], cap),
+		list:    internal.Chain[kv[K, V]]{},
+		objPool: NewObjectPool[internal.ChainLink[kv[K, V]]](cap),
 	}
 }
 
@@ -36,7 +43,7 @@ func NewOrderedMap[K comparable, V any](cap ...int) *OrderedMap[K, V] {
 // - mem: O(1)
 func (this *OrderedMap[K, V]) Get(key K) (V, bool) {
 	if node, ok := this.dict[key]; ok {
-		return node.Val, true
+		return node.Val.V, true
 	}
 
 	var zeroVal V
@@ -52,13 +59,14 @@ func (this *OrderedMap[K, V]) Get(key K) (V, bool) {
 // - mem: O(1)
 func (this *OrderedMap[K, V]) Put(key K, value V) {
 	if node, ok := this.dict[key]; ok {
-		// this.removeNode(node)
-		// node.Val = value
-		// this.addNodeToTail(node)
-
-		node.Val = value
+		node.Val.V = value
 	} else {
-		node = &internal.Node[V]{Val: value}
+		node = this.objPool.Get() //&internal.Node[kv[K,V]]{Val: value}
+		node.Val.K = key
+		node.Val.V = value
+		node.Prev = nil // overcautiousness
+		node.Next = nil // overcautiousness
+
 		this.list.Append(node)
 		this.dict[key] = node
 	}
@@ -91,26 +99,34 @@ func (this *OrderedMap[K, V]) GetValues() []V {
 	}
 
 	if cap(result) == 1 {
-		result[0] = this.list.GetHead().Val
+		result[0] = this.list.GetHead().Val.V
 	}
 
 	for i, v := range this.list.Iter() {
-		result[i] = v
+		result[i] = v.V
 	}
 
 	return result
 }
 
-// Iter iteration on map
+// Iter iteration on map in insertion order
 //
 // Example:
 //
 //	m := NewOrderedMap[int, string]()
-//	for i, v := range m.Iter() {
-//		fmt.Println(i,v)
+//
+//	for k, v := range m.Iter() {
+//		fmt.Println(k,v)
 //	}
-func (this *OrderedMap[K, V]) Iter() func(func(int, V) bool) {
-	return this.list.Iter()
+func (this *OrderedMap[K, V]) Iter() func(func(K, V) bool) {
+	return func(yield func(K, V) bool) {
+		h := this.list.GetHead()
+		for n := h; n != nil; n = n.Next {
+			if !yield(n.Val.K, n.Val.V) {
+				return
+			}
+		}
+	}
 }
 
 // Delete built-in function deletes the element with the specified key
