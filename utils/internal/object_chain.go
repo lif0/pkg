@@ -1,6 +1,6 @@
 package internal
 
-type LinkedList[T any] struct {
+type ObjectChain[T any] struct {
 	size int
 	pool []*Node[T]
 	head *Node[T]
@@ -13,19 +13,19 @@ type Node[T any] struct {
 	Next *Node[T]
 }
 
-func NewLinkedList[T any](cap ...int) *LinkedList[T] {
+func NewLinkedList[T any](cap ...int) *ObjectChain[T] {
 	// var llCap int
 
 	// if len(cap) > 0 {
 	// 	llCap = cap[0]
 	// }
 
-	return &LinkedList[T]{}
+	return &ObjectChain[T]{}
 }
 
 // Remove ...
 // time: O(1); mem: O(1)
-func (l *LinkedList[T]) Remove(node *Node[T]) {
+func (l *ObjectChain[T]) Remove(node *Node[T]) {
 	if node == nil {
 		return
 	}
@@ -55,7 +55,7 @@ func (l *LinkedList[T]) Remove(node *Node[T]) {
 
 // Append ...
 // time: O(1); mem: O(1)
-func (l *LinkedList[T]) Append(node *Node[T]) {
+func (l *ObjectChain[T]) Append(node *Node[T]) {
 	if l.tail == nil {
 		l.head = node
 		l.tail = node
@@ -70,18 +70,18 @@ func (l *LinkedList[T]) Append(node *Node[T]) {
 
 // GetHead ...
 // time: O(1); mem: O(1)
-func (l *LinkedList[T]) GetHead() *Node[T] {
+func (l *ObjectChain[T]) GetHead() *Node[T] {
 	return l.head
 }
 
 // Len ...
 // time: O(1); mem: O(1)
-func (l *LinkedList[T]) Len() int {
+func (l *ObjectChain[T]) Len() int {
 	return l.size
 }
 
 // Iter ...
-func (l *LinkedList[T]) Iter() func(func(int, T) bool) {
+func (l *ObjectChain[T]) Iter() func(func(int, T) bool) {
 	return func(yield func(int, T) bool) {
 		i := 0
 		for n := l.head; n != nil; n = n.Next {

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func collect[T any](l *internal.LinkedList[T]) []T {
+func collect[T any](l *internal.ObjectChain[T]) []T {
 	var out []T
 	for _, v := range l.Iter() {
 		out = append(out, v)
@@ -15,12 +15,12 @@ func collect[T any](l *internal.LinkedList[T]) []T {
 	return out
 }
 
-func Test_LinkedList_Append(t *testing.T) {
+func Test_ObjectChain_Append(t *testing.T) {
 	t.Parallel()
 
 	t.Run("ok/append-to-empty", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 
 		// act
 		l.Append(&internal.Node[int]{Val: 1})
@@ -36,7 +36,7 @@ func Test_LinkedList_Append(t *testing.T) {
 
 	t.Run("ok/append-to-non-empty", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 
@@ -54,7 +54,7 @@ func Test_LinkedList_Append(t *testing.T) {
 
 	t.Run("bug/append-preserves-external-next", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		externalTail := &internal.Node[int]{Val: 9}
 		n := &internal.Node[int]{Val: 1, Next: externalTail}
 
@@ -68,12 +68,12 @@ func Test_LinkedList_Append(t *testing.T) {
 	})
 }
 
-func Test_LinkedList_Remove(t *testing.T) {
+func Test_ObjectChain_Remove(t *testing.T) {
 	t.Parallel()
 
 	t.Run("ok/remove-head", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 		n3 := &internal.Node[int]{Val: 3}
@@ -94,7 +94,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("ok/remove-tail", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 		l.Append(n1)
@@ -112,7 +112,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("ok/remove-middle", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 		n3 := &internal.Node[int]{Val: 3}
@@ -133,7 +133,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("ok/remove-singleton", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		l.Append(n1)
 
@@ -147,7 +147,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("ok/remove-nil-noop", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		l.Append(&internal.Node[int]{Val: 1})
 
 		// act
@@ -160,7 +160,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("bug/remove-foreign-node-decrements-size", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		l.Append(&internal.Node[int]{Val: 1})
 		foreign := &internal.Node[int]{Val: 999}
 
@@ -174,7 +174,7 @@ func Test_LinkedList_Remove(t *testing.T) {
 
 	t.Run("bug/remove-twice-size-negative", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n := &internal.Node[int]{Val: 1}
 		l.Append(n)
 
@@ -188,12 +188,12 @@ func Test_LinkedList_Remove(t *testing.T) {
 	})
 }
 
-func Test_LinkedList_GetHead(t *testing.T) {
+func Test_ObjectChain_GetHead(t *testing.T) {
 	t.Parallel()
 
 	t.Run("edge/empty", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 
 		// act
 		h := l.GetHead()
@@ -204,7 +204,7 @@ func Test_LinkedList_GetHead(t *testing.T) {
 
 	t.Run("ok/non-empty", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 		l.Append(n1)
@@ -219,12 +219,12 @@ func Test_LinkedList_GetHead(t *testing.T) {
 	})
 }
 
-func Test_LinkedList_Len(t *testing.T) {
+func Test_ObjectChain_Len(t *testing.T) {
 	t.Parallel()
 
 	t.Run("ok/increments-and-decrements", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		n1 := &internal.Node[int]{Val: 1}
 		n2 := &internal.Node[int]{Val: 2}
 		n3 := &internal.Node[int]{Val: 3}
@@ -241,12 +241,12 @@ func Test_LinkedList_Len(t *testing.T) {
 	})
 }
 
-func Test_LinkedList_Iter(t *testing.T) {
+func Test_ObjectChain_Iter(t *testing.T) {
 	t.Parallel()
 
 	t.Run("edge/empty", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		iter := l.Iter()
 
 		// arrange
@@ -264,7 +264,7 @@ func Test_LinkedList_Iter(t *testing.T) {
 
 	t.Run("ok/full-iteration", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[string]
+		var l internal.ObjectChain[string]
 		l.Append(&internal.Node[string]{Val: "a"})
 		l.Append(&internal.Node[string]{Val: "b"})
 		l.Append(&internal.Node[string]{Val: "c"})
@@ -288,7 +288,7 @@ func Test_LinkedList_Iter(t *testing.T) {
 
 	t.Run("ok/stop-immediately", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		l.Append(&internal.Node[int]{Val: 10})
 		l.Append(&internal.Node[int]{Val: 20})
 		l.Append(&internal.Node[int]{Val: 30})
@@ -315,7 +315,7 @@ func Test_LinkedList_Iter(t *testing.T) {
 
 	t.Run("ok/stop-middle", func(t *testing.T) {
 		t.Parallel()
-		var l internal.LinkedList[int]
+		var l internal.ObjectChain[int]
 		l.Append(&internal.Node[int]{Val: 1})
 		l.Append(&internal.Node[int]{Val: 2})
 		l.Append(&internal.Node[int]{Val: 3})
