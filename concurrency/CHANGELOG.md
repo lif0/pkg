@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Changed
 
-## [v1.2.0] 2025-MM-DD
+## [v1.2.0] 2025-10-29
 ### Added
-- [PKG-20] Add SyncValue
-### Fixed
-### Changed
+- [[PKG-20]](https://github.com/lif0/pkg/issues/28) Add SyncValue[T]; by @lif0
 
 ## [v1.1.0]
 ### Added

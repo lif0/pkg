@@ -9,10 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Changed
 
-## [v2.0.1] 2025-10-26
+## [v1.2.0] 2025-10-29
 ### Added
-- Set minimum go version as 1.18
-
-## [v2.0.0] 2025-10-23
-### Added
-- Set minimum go version as 1.22
+- Set minimum go version as 1.19 by @lif0
