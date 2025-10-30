@@ -260,7 +260,7 @@ pkg: github.com/lif0/pkg/utils/structx
 
 ##### Key/Value: `int, int`
 
-| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) |  time (`OrderedMap` vs `map`) |
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (`OrderedMap` vs `map`) |
 | -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | -------------------------: |
 | put            |         220,267 |       100,546 |        705,330 |      295,557 |                  39 |                33 | **+119.1%** (2.19× slower) |
 | get_hit        |          74,626 |        65,668 |              0 |            0 |                   0 |                 0 |  **+13.6%** (1.14× slower) |
@@ -269,7 +269,7 @@ pkg: github.com/lif0/pkg/utils/structx
 
 ##### Key/Value: `string, []string`
 
-| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | Δ time (Ordered vs `map`) |
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (Ordered vs `map`) |
 | -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | ------------------------: |
 | put            |         507,196 |       360,451 |      1,084,229 |      787,101 |                  40 |                33 | **+40.7%** (1.41× slower) |
 | get_hit        |         136,184 |       193,829 |              0 |            0 |                   0 |                 0 | **−29.7%** (1.43× faster) |
@@ -278,7 +278,7 @@ pkg: github.com/lif0/pkg/utils/structx
 
 ##### Key/Value: `string, ComplexStruct`
 
-| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | Δ time (Ordered vs `map`) |
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (Ordered vs `map`) |
 | -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | ------------------------: |
 | put            |         493,887 |       329,433 |      1,166,137 |      918,167 |                  40 |                33 | **+49.9%** (1.50× slower) |
 | get_hit        |         117,553 |       174,528 |              0 |            0 |                   0 |                 0 | **−32.6%** (1.49× faster) |

@@ -79,10 +79,7 @@ func (this *OrderedMap[K, V]) Put(key K, value V) {
 // - time: O(1)
 // - mem: O(1)
 func (this *OrderedMap[K, V]) Delete(key K) {
-	if node, ok := this.dict[key]; ok {
-		this.list.Remove(node)
-		delete(this.dict, key)
-	}
+	Delete(this, key)
 }
 
 // GetValues returns all values in insertion order.
