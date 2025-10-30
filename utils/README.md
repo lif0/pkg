@@ -315,14 +315,12 @@ func main() {
 
 ## 🗺️ Roadmap
 
-The future direction of this package is community-driven! Ideas and contributions are highly welcome.
+- [ ] improve Object Order
+- [ ] improve perf for OrderedMap
 
-☹️ No idea
+---
 
-Contributions and ideas are welcome! 🤗
-
-**Contributions:**
-Feel free to open an Issue to discuss a new idea or a Pull Request to implement it! 🤗
+Contributions and feature suggestions are welcome 🤗.
 
 ---
 
