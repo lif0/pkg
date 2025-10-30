@@ -1,0 +1,343 @@
+package internal_test
+
+import (
+	"testing"
+
+	"github.com/lif0/pkg/utils/internal"
+	"github.com/stretchr/testify/assert"
+)
+
+func collect[T any](l *internal.Chain[T]) []T {
+	var out []T
+	for _, v := range l.Iter() {
+		out = append(out, v)
+	}
+	return out
+}
+
+func Test_ObjectChain_Append(t *testing.T) {
+	t.Parallel()
+
+	t.Run("ok/append-to-empty", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+
+		// act
+		l.Append(&internal.ChainLink[int]{Val: 1})
+
+		// assert
+		assert.Equal(t, 1, l.Len())
+		head := l.GetHead()
+		assert.NotNil(t, head)
+		assert.Equal(t, 1, head.Val)
+		assert.Nil(t, head.Prev)
+		assert.Nil(t, head.Next)
+	})
+
+	t.Run("ok/append-to-non-empty", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+
+		// act
+		l.Append(n1)
+		l.Append(n2)
+
+		// assert
+		assert.Equal(t, 2, l.Len())
+		head := l.GetHead()
+		assert.Equal(t, 1, head.Val)
+		assert.Equal(t, 2, head.Next.Val)
+		assert.Equal(t, head, head.Next.Prev)
+	})
+
+	t.Run("bug/append-preserves-external-next", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		externalTail := &internal.ChainLink[int]{Val: 9}
+		n := &internal.ChainLink[int]{Val: 1, Next: externalTail}
+
+		// act
+		l.Append(n)
+
+		// assert
+		assert.Equal(t, 1, l.Len())
+		got := collect(&l)
+		assert.Equal(t, []int{1, 9}, got)
+	})
+}
+
+func Test_ObjectChain_Remove(t *testing.T) {
+	t.Parallel()
+
+	t.Run("ok/remove-head", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+		n3 := &internal.ChainLink[int]{Val: 3}
+		l.Append(n1)
+		l.Append(n2)
+		l.Append(n3)
+
+		// act
+		l.Remove(n1)
+
+		// assert
+		assert.Equal(t, 2, l.Len())
+		head := l.GetHead()
+		assert.Equal(t, 2, head.Val)
+		assert.Nil(t, head.Prev)
+		assert.Equal(t, 3, head.Next.Val)
+	})
+
+	t.Run("ok/remove-tail", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+		l.Append(n1)
+		l.Append(n2)
+
+		// act
+		l.Remove(n2)
+
+		// assert
+		assert.Equal(t, 1, l.Len())
+		head := l.GetHead()
+		assert.Equal(t, 1, head.Val)
+		assert.Nil(t, head.Next)
+	})
+
+	t.Run("ok/remove-middle", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+		n3 := &internal.ChainLink[int]{Val: 3}
+		l.Append(n1)
+		l.Append(n2)
+		l.Append(n3)
+
+		// act
+		l.Remove(n2)
+
+		// assert
+		assert.Equal(t, 2, l.Len())
+		head := l.GetHead()
+		assert.Equal(t, 1, head.Val)
+		assert.Equal(t, 3, head.Next.Val)
+		assert.Equal(t, head, head.Next.Prev)
+	})
+
+	t.Run("ok/remove-singleton", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		l.Append(n1)
+
+		// act
+		l.Remove(n1)
+
+		// assert
+		assert.Equal(t, 0, l.Len())
+		assert.Nil(t, l.GetHead())
+	})
+
+	t.Run("ok/remove-nil-noop", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		l.Append(&internal.ChainLink[int]{Val: 1})
+
+		// act
+		l.Remove(nil)
+
+		// assert
+		assert.Equal(t, 1, l.Len())
+		assert.Equal(t, []int{1}, collect(&l))
+	})
+
+	t.Run("bug/remove-foreign-node-decrements-size", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		l.Append(&internal.ChainLink[int]{Val: 1})
+		foreign := &internal.ChainLink[int]{Val: 999}
+
+		// act
+		l.Remove(foreign)
+
+		// assert
+		assert.Equal(t, []int{1}, collect(&l))
+		assert.Equal(t, 0, l.Len())
+	})
+
+	t.Run("bug/remove-twice-size-negative", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n := &internal.ChainLink[int]{Val: 1}
+		l.Append(n)
+
+		// act
+		l.Remove(n)
+		l.Remove(n)
+
+		// assert
+		assert.Equal(t, -1, l.Len())
+		assert.Nil(t, l.GetHead())
+	})
+}
+
+func Test_ObjectChain_GetHead(t *testing.T) {
+	t.Parallel()
+
+	t.Run("edge/empty", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+
+		// act
+		h := l.GetHead()
+
+		// assert
+		assert.Nil(t, h)
+	})
+
+	t.Run("ok/non-empty", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+		l.Append(n1)
+		l.Append(n2)
+
+		// act
+		h := l.GetHead()
+
+		// assert
+		assert.NotNil(t, h)
+		assert.Equal(t, 1, h.Val)
+	})
+}
+
+func Test_ObjectChain_Len(t *testing.T) {
+	t.Parallel()
+
+	t.Run("ok/increments-and-decrements", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		n1 := &internal.ChainLink[int]{Val: 1}
+		n2 := &internal.ChainLink[int]{Val: 2}
+		n3 := &internal.ChainLink[int]{Val: 3}
+
+		// act
+		l.Append(n1)
+		l.Append(n2)
+		l.Append(n3)
+		l.Remove(n2)
+
+		// assert
+		assert.Equal(t, 2, l.Len())
+		assert.Equal(t, []int{1, 3}, collect(&l))
+	})
+}
+
+func Test_ObjectChain_Iter(t *testing.T) {
+	t.Parallel()
+
+	t.Run("edge/empty", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		iter := l.Iter()
+
+		// arrange
+		calls := 0
+
+		// act
+		iter(func(i int, v int) bool {
+			calls++
+			return true
+		})
+
+		// assert
+		assert.Equal(t, 0, calls)
+	})
+
+	t.Run("ok/full-iteration", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[string]
+		l.Append(&internal.ChainLink[string]{Val: "a"})
+		l.Append(&internal.ChainLink[string]{Val: "b"})
+		l.Append(&internal.ChainLink[string]{Val: "c"})
+		iter := l.Iter()
+
+		// arrange
+		var gotIdx []int
+		var gotVal []string
+
+		// act
+		iter(func(i int, v string) bool {
+			gotIdx = append(gotIdx, i)
+			gotVal = append(gotVal, v)
+			return true
+		})
+
+		// assert
+		assert.Equal(t, []int{0, 1, 2}, gotIdx)
+		assert.Equal(t, []string{"a", "b", "c"}, gotVal)
+	})
+
+	t.Run("ok/stop-immediately", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		l.Append(&internal.ChainLink[int]{Val: 10})
+		l.Append(&internal.ChainLink[int]{Val: 20})
+		l.Append(&internal.ChainLink[int]{Val: 30})
+		iter := l.Iter()
+
+		// arrange
+		var gotIdx []int
+		var gotVal []int
+		calls := 0
+
+		// act
+		iter(func(i int, v int) bool {
+			calls++
+			gotIdx = append(gotIdx, i)
+			gotVal = append(gotVal, v)
+			return false
+		})
+
+		// assert
+		assert.Equal(t, 1, calls)
+		assert.Equal(t, []int{0}, gotIdx)
+		assert.Equal(t, []int{10}, gotVal)
+	})
+
+	t.Run("ok/stop-middle", func(t *testing.T) {
+		t.Parallel()
+		var l internal.Chain[int]
+		l.Append(&internal.ChainLink[int]{Val: 1})
+		l.Append(&internal.ChainLink[int]{Val: 2})
+		l.Append(&internal.ChainLink[int]{Val: 3})
+		l.Append(&internal.ChainLink[int]{Val: 4})
+		iter := l.Iter()
+
+		// arrange
+		var gotIdx []int
+		var gotVal []int
+		calls := 0
+
+		// act
+		iter(func(i int, v int) bool {
+			calls++
+			gotIdx = append(gotIdx, i)
+			gotVal = append(gotVal, v)
+			return i < 1
+		})
+
+		// assert
+		assert.Equal(t, 2, calls)
+		assert.Equal(t, []int{0, 1}, gotIdx)
+		assert.Equal(t, []int{1, 2}, gotVal)
+	})
+}

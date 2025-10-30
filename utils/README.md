@@ -19,6 +19,8 @@
     - [Examples](#-examples)
 - [Package: `errx`](#-package-errx)
   - [MultiError](#multierror)
+- [Package: `structx`](#-package-structx)
+  - [OrderedMap](#orderedmap)
 - [Roadmap](#️-roadmap)
 - [License](#-license)
 
@@ -34,7 +36,7 @@ For full documentation, see [https://pkg.go.dev/github.com/lif0/pkg/utils](https
 
 ## ⚙️ Requirements
 
-- **go 1.22 or higher**
+- **go 1.23 or higher**
 
 ## 📦 Installation
 
@@ -169,6 +171,8 @@ size := EstimatePayloadOf(&arr)
 
 ## 📚 Package `errx`
 
+Provide additional feature for error.
+
 ### MultiError
 
 MultiError is a slice of errors implementing the error interface.
@@ -210,16 +214,113 @@ for _, job := range jobs {
 return me.MaybeUnwrap()
 ```
 
+## 📚 Package `structx`
+
+Provide additional golang type.
+
+### OrderedMap
+
+OrderedMap is a map[Type]Type1-like collection that preserves the order in which keys were inserted. It behaves like a regular map but allows deterministic iteration over its elements.
+
+Useful:
+Imagine you are making a closer or graceful shutdown lib, and you need to register/unregister some functions/service in it, and finally handle them in the order they were added. Use it structure. You are welcome🤗
+
+The structure provide provice
+
+#### API
+
+| Func                                                                   | Complexity (time / mem)      |
+| ---------------------------------------------------------------------- | ---------------------------- |
+| `(m *OrderedMap[K, V]) Get(key K) (V, bool)`                           | O(1) / O(1)                  |
+| `(m *OrderedMap[K, V]) Put(key K, value V)`                            | O(1) / O(1)                  |
+| `(m *OrderedMap[K, V]) GetValues() []V`                                | O(N) / O(N)                  |
+| `(m *OrderedMap[K, V]) Iter() []V`                                     | for k,v := range m.Iter() {} |
+| `structx.Delete[K comparable, V any](m *OrderedMap[K, V], key K)`      | O(1) / O(1)                  |
+
+
+#### Benchmarks: OrderedMap[Type, Type1] vs map[Type]Type1
+
+Environment:
+
+```text
+goos: darwin
+goarch: arm64
+cpu: Apple M2
+pkg: github.com/lif0/pkg/utils/structx
+```
+
+##### TL;DR
+
+- Inserts (`put`): `map` is faster and uses less memory.
+- Lookups (`get_hit`): `OrderedMap` is faster on string keys; a bit slower on int keys.
+- Deletes (`delete`): almost the same.
+- Iteration (`iterate_values`): OrderedMap is much faster and ordered.
+
+---
+
+##### Key/Value: `int, int`
+
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (`OrderedMap` vs `map`) |
+| -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | -------------------------: |
+| put            |         220,267 |       100,546 |        705,330 |      295,557 |                  39 |                33 | **+119.1%** (2.19× slower) |
+| get_hit        |          74,626 |        65,668 |              0 |            0 |                   0 |                 0 |  **+13.6%** (1.14× slower) |
+| delete         |          19,322 |        19,348 |              0 |            0 |                   0 |                 0 |         **−0.1%** (≈ same) |
+| iterate_values |          11,131 |        61,998 |              0 |            0 |                   0 |                 0 |   **−82.0%** (5.6× faster) |
+
+##### Key/Value: `string, []string`
+
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (Ordered vs `map`) |
+| -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | ------------------------: |
+| put            |         507,196 |       360,451 |      1,084,229 |      787,101 |                  40 |                33 | **+40.7%** (1.41× slower) |
+| get_hit        |         136,184 |       193,829 |              0 |            0 |                   0 |                 0 | **−29.7%** (1.43× faster) |
+| delete         |          20,713 |        20,758 |              0 |            0 |                   0 |                 0 |        **−0.2%** (≈ same) |
+| iterate_values |          17,822 |        63,645 |              0 |            0 |                   0 |                 0 |  **−72.0%** (3.6× faster) |
+
+##### Key/Value: `string, ComplexStruct`
+
+| Operation      | ns/op (`OrderedMap`) | ns/op (`map`) | B/op (`OrderedMap`) | B/op (`map`) | allocs/op (`OrderedMap`) | allocs/op (`map`) | time (Ordered vs `map`) |
+| -------------- | --------------: | ------------: | -------------: | -----------: | ------------------: | ----------------: | ------------------------: |
+| put            |         493,887 |       329,433 |      1,166,137 |      918,167 |                  40 |                33 | **+49.9%** (1.50× slower) |
+| get_hit        |         117,553 |       174,528 |              0 |            0 |                   0 |                 0 | **−32.6%** (1.49× faster) |
+| delete         |          20,471 |        20,420 |              0 |            0 |                   0 |                 0 |        **+0.2%** (≈ same) |
+| iterate_values |          19,729 |        62,435 |              0 |            0 |                   0 |                 0 |  **−68.4%** (3.2× faster) |
+
+##### How to run
+
+```bash
+go test -benchmem -run=^$ -bench ^Benchmark_OrderedMap -v github.com/lif0/pkg/utils/structx
+```
+
+
+#### Examples
+
+```go
+import "github.com/lif0/pkg/utils/structx"
+
+
+func main() {
+  m := structx.NewOrderedMap[string, int]()
+  
+  m.Put("key", 10)
+
+  v, ok := m.Get("key") // v = 10
+  
+  structx.Delete(m, "key") // or build-in func m.Delete("key"), but prefer build-in function.
+
+  for k,v := range m.Iter() {
+    fmt.Println(k,v)
+  }
+}
+```
+
 ## 🗺️ Roadmap
 
-The future direction of this package is community-driven! Ideas and contributions are highly welcome.
+- [ ] improve Object Order
+- [ ] improve perf for OrderedMap
 
-☹️ No idea
+---
 
-Contributions and ideas are welcome! 🤗
-
-**Contributions:**
-Feel free to open an Issue to discuss a new idea or a Pull Request to implement it! 🤗
+Contributions and feature suggestions are welcome 🤗.
 
 ---
 
