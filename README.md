@@ -1,11 +1,27 @@
 <div align="center">
 <img src=".github/assets/pkg_poster_round.png"  width="256" height="256" >
-<h4 align="center">🚀A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
+<h4 align="center">Low-level Go packages I use across my own projects. Fast, and mostly dependency-free.</h4>
 
 <p align="center">
 <!-- Build Status  -->
 <a href="https://github.com/lif0/pkg/actions/">
 <img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
+</a>
+<!-- Go Reference -->
+<a href="https://pkg.go.dev/github.com/lif0/pkg">
+<img src="https://pkg.go.dev/badge/github.com/lif0/pkg.svg" alt="Go Reference" />
+</a>
+<!-- Coverage -->
+<a href="https://coveralls.io/github/lif0/pkg?branch=main">
+<img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" alt="Coverage Status" />
+</a>
+<!-- Go Report Card -->
+<a href="https://goreportcard.com/report/github.com/lif0/pkg">
+<img src="https://goreportcard.com/badge/github.com/lif0/pkg" />
+</a>
+<!-- Version -->
+<a href="https://github.com/lif0/pkg/releases">
+<img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=v*" />
 </a>
 <!-- GitHub -->
 <a href="https://github.com/lif0/pkg">
@@ -19,86 +35,66 @@
             <th>package</th>
             <th>doc</th>
             <th>about</th>
-            <th>badges</th>
         </tr>
-        </thead>
-        <tbody>
-            <!-- Module concurrency -->
-            <tr>
-                <td>
-                    <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=concurrency/*"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="https://github.com/lif0/pkg/tree/main/concurrency">
-                        <img src="https://img.shields.io/badge/doc-concurrency-007d9c?logo=go&logoColor=white&style=platic" />
-                    </a>
-                </td>
-                <td>
-                    <p>Concurrency utilities for Go</p>
-                </td>
-                <td>
-                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/concurrency">
-                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/concurrency" />
-                    </a>
-                    <a href="https://coveralls.io/github/lif0/pkg">
-                    <img alt="concurrency coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-concurrency.json">
-                    </a>
-                </td>
-            </tr>
-            <!-- Module utils -->
-            <tr>
-                <td>
-                    <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=utils/*"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="https://github.com/lif0/pkg/tree/main/utils">
-                        <img src="https://img.shields.io/badge/doc-utils-007d9c?logo=go&logoColor=white&style=platic" />
-                    </a>
-                </td>
-                <td>
-                    <p>Utils for Go</p>
-                </td>
-                <td>
-                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/utils">
-                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/utils" />
-                    </a>
-                    <a href="https://coveralls.io/github/lif0/pkg">
-                    <img alt="utils coverage" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lif0/pkg/refs/heads/main/.github/assets/badges/coverage-utils.json">
-                    </a>
-                </td>
-            </tr>
-            <!-- Module sync -->
-            <tr>
-                <td>
-                    <a href=".">
-                        <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=sync/*"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="https://github.com/lif0/pkg/tree/main/sync">
-                        <img src="https://img.shields.io/badge/doc-sync-007d9c?logo=go&logoColor=white&style=platic" />
-                    </a>
-                </td>
-                <td>
-                    <p>Extends the sync package.</p>
-                </td>
-                <td>
-                    <a href="https://goreportcard.com/report/github.com/lif0/pkg/sync">
-                        <img src="https://goreportcard.com/badge/github.com/lif0/pkg/sync" />
-                    </a>
-                    <a href="https://coveralls.io/github/lif0/pkg">
-                    <img alt="sync coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Flif0%2Fpkg%2Frefs%2Fheads%2Fmain%2F.github%2Fassets%2Fbadges%2Fcoverage-sync.json">
-                    </a>
-                </td>
-            </tr>
-        </tbody>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>async</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/async">go.dev</a></td>
+            <td>Futures, promises, and deferred actions</td>
+        </tr>
+        <tr>
+            <td><code>syncx</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/syncx">go.dev</a></td>
+            <td>Synchronization primitives: reentrant mutex, semaphore, sync value, <code>WithLock</code></td>
+        </tr>
+        <tr>
+            <td><code>chanx</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/chanx">go.dev</a></td>
+            <td>Channel helpers: fan-in, send/receive conversions</td>
+        </tr>
+        <tr>
+            <td><code>errx</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/errx">go.dev</a></td>
+            <td>Error utilities: <code>MultiError</code></td>
+        </tr>
+        <tr>
+            <td><code>structx</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/structx">go.dev</a></td>
+            <td>Data structures: <code>OrderedMap</code>, <code>ObjectPool</code></td>
+        </tr>
+        <tr>
+            <td><code>reflectx</code></td>
+            <td><a href="https://pkg.go.dev/github.com/lif0/pkg/reflectx">go.dev</a></td>
+            <td>Reflection helpers: payload-size estimation</td>
+        </tr>
+    </tbody>
 </table>
 
 </div>
+
+---
+
+## Install
+
+```bash
+go get github.com/lif0/pkg@latest
+```
+
+```go
+import (
+    "github.com/lif0/pkg/async"
+    "github.com/lif0/pkg/syncx"
+    "github.com/lif0/pkg/chanx"
+    "github.com/lif0/pkg/errx"
+    "github.com/lif0/pkg/structx"
+    "github.com/lif0/pkg/reflectx"
+)
+```
+
+> **Migrating from the old multi-module layout?** See [CHANGELOG.md](./CHANGELOG.md) for the
+> import-path mapping. Old tags (`concurrency/v*`, `sync/v*`, `utils/v*`) still resolve, so
+> existing pins keep working.
 
 ---
 

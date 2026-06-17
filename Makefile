@@ -1,2 +1,9 @@
 tidy:
-	find . -name 'go.mod' -print -execdir sh -c 'echo "→ $$PWD"; go mod tidy' \;
+	go mod tidy
+
+test:
+	go test ./... -race
+
+cover:
+	go test ./... -race -covermode=atomic -coverprofile=coverage.out
+	go tool cover -func=coverage.out

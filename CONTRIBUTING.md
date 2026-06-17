@@ -1,6 +1,6 @@
 # Contributing to pkg
 
-Thank you for your interest in contributing to **pkg**! This repository is a collection of low-level, dependency-free (mostly), high-performance Go packages designed for maximum efficiency, zero allocations where possible, and clean, idiomatic APIs. We aim to maintain production-grade quality with strong guarantees on stability and code quality.
+Thank you for your interest in contributing to **pkg**! It's a small collection of low-level Go packages I use across my own projects. They're meant to be fast, idiomatic, and avoid external dependencies where possible. We aim to maintain production-grade quality with strong guarantees on stability and code quality.
 
 Contributions are welcome, whether it's reporting bugs, suggesting features, fixing issues, or adding new packages. All contributions help make this toolkit better for the Go community.
 
@@ -17,15 +17,15 @@ We encourage pull requests for bug fixes, features, documentation improvements, 
 1. **Fork the Repository**: Create your own fork of the repo.
 
 2. **Create a Branch**: Branch names must follow the format `<package>/<type>/<description>`, where:
-   - `<package>` is the affected package (e.g., `utils`, `concurrency`, `sync`).
+   - `<package>` is the affected package (e.g., `async`, `syncx`, `chanx`, `errx`, `structx`, `reflectx`).
    - `<type>` is the change type (e.g., `feature`, `fix`, `docs`, `test`).
    - `<description>` is a short, descriptive name (use hyphens for spaces).
    
    Examples:
-   - `utils/feature/add-new-string-util`
-   - `concurrency/fix/deadlock-in-semaphore`
-   - `sync/docs/update-mutex-usage`
-   - `utils/feature/PKG-123`
+   - `structx/feature/add-new-string-util`
+   - `syncx/fix/deadlock-in-semaphore`
+   - `syncx/docs/update-mutex-usage`
+   - `async/feature/PKG-123`
 
 3. **Make Changes**:
    - Ensure your code aligns with the project's goals: low-level, high-performance, minimal dependencies (prefer standard library).
@@ -36,11 +36,11 @@ We encourage pull requests for bug fixes, features, documentation improvements, 
    - Update documentation (e.g., godoc comments) and README if needed.
 
 4. **Commit Your Changes**: Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages. Examples:
-   - `feat(concurrency): add new semaphore implementation`
-   - `[PKG-XX]feat(concurrency): add new semaphore implementation`
-   - `fix(utils): resolve panic in edge case`
+   - `feat(syncx): add new semaphore implementation`
+   - `[PKG-XX]feat(syncx): add new semaphore implementation`
+   - `fix(structx): resolve panic in edge case`
    - `docs: update README with new package details`
-   - `test(sync): add benchmarks for mutex`
+   - `test(syncx): add benchmarks for mutex`
 
 5. **Test Thoroughly**:
    - Run `go test ./...` to ensure all tests pass.

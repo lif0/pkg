@@ -1,40 +1,18 @@
 name: test coverage coverallsapp
 on:
-  workflow_run:
-    workflows: ["build"]
-    types:
-      - completed
   push:
     branches:
       - main
-    paths:
-      - '**.go'
-      - 'utils/**'
-      - 'concurrency/**'
-      - 'sync/**'
-      - '.github/workflows/**'
   pull_request:
     branches:
       - '**'
 
 permissions:
   contents: read # чтоб бейджи грузились
-#  pull-requests: write
-
-env:
-  GO_VERSION: stable
 
 jobs:
-  test:
+  coverage:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        module: [utils, concurrency, sync]
-    defaults:
-      run:
-        working-directory: ${{ matrix.module }}
-
     steps:
       - name: Clone repo
         uses: actions/checkout@v4
@@ -42,11 +20,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ${{ matrix.module }}/go.mod
+          go-version-file: go.mod
           cache: true
-          cache-dependency-path: ${{ matrix.module }}/go.sum
-          #go-version: ${{ env.GO_VERSION }}
-          #cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Vet
         run: go vet ./...
@@ -55,29 +30,11 @@ jobs:
         run: go build ./...
 
       - name: Test
-        run: |
-          go test ./... -race -covermode=atomic -coverprofile=coverage_package_${{ matrix.module }}.out
-          pwd
-          ls
+        run: go test ./... -race -covermode=atomic -coverprofile=coverage.out
 
-      - name: Upload to Coveralls (flag = module)
+      - name: Upload to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file:  ${{ matrix.module }}/coverage_package_${{ matrix.module }}.out
-          format: golang  
-          flag-name: ${{ matrix.module }}
-          parallel: true
-
-  finish:
-    needs: test
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Finish upload to Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }} 
-          #coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
-          parallel-finished: true
-          carryforward: "utils,concurrency,sync"
+          file: coverage.out
+          format: golang
