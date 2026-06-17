@@ -104,8 +104,9 @@ func (p *ObjectPool[T]) allocObjects() {
 		line = 1
 	}
 
-	if uint32(cap(p.obj)) > line {
-		line = uint32(cap(p.obj))
+	curCap := uint32(cap(p.obj)) // #nosec G115 -- slice cap is non-negative and bounded by uint32 by design
+	if curCap > line {
+		line = curCap
 	}
 
 	free := p.make(line)
