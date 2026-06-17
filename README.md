@@ -1,6 +1,6 @@
 <div align="center">
 <img src=".github/assets/pkg_poster_round.png"  width="256" height="256" >
-<h4 align="center">🚀A collection of low-level, dependency-free(mostly), high-performance Go packages🚀</h2>
+<h4 align="center">Low-level Go packages I use across my own projects. Fast, and mostly dependency-free.</h4>
 
 <p align="center">
 <!-- Build Status  -->

@@ -1,6 +1,6 @@
 # Contributing to pkg
 
-Thank you for your interest in contributing to **pkg**! This repository is a collection of low-level, dependency-free (mostly), high-performance Go packages designed for maximum efficiency, zero allocations where possible, and clean, idiomatic APIs. We aim to maintain production-grade quality with strong guarantees on stability and code quality.
+Thank you for your interest in contributing to **pkg**! It's a small collection of low-level Go packages I use across my own projects. They're meant to be fast, idiomatic, and avoid external dependencies where possible. We aim to maintain production-grade quality with strong guarantees on stability and code quality.
 
 Contributions are welcome, whether it's reporting bugs, suggesting features, fixing issues, or adding new packages. All contributions help make this toolkit better for the Go community.
 
