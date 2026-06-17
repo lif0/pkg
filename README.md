@@ -4,8 +4,8 @@
 
 <p align="center">
 <!-- Build Status  -->
-<a href="https://github.com/lif0/pkg/actions/">
-<img src="https://github.com/lif0/pkg/workflows/build/badge.svg" />
+<a href="https://github.com/lif0/pkg/actions/workflows/build.yml">
+<img src="https://github.com/lif0/pkg/actions/workflows/build.yml/badge.svg" />
 </a>
 <!-- Go Reference -->
 <a href="https://pkg.go.dev/github.com/lif0/pkg">

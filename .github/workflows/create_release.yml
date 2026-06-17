@@ -49,13 +49,118 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
 
+      - name: Find previous release tag
+        id: prev
+        shell: bash
+        run: |
+          set -euo pipefail
+          # only plain vX.Y.Z tags (legacy module tags like concurrency/v* are ignored)
+          prev_tag="$(git tag --list 'v*' --sort=-v:refname | head -n1 || true)"
+          echo "prev_tag=$prev_tag" >> "$GITHUB_OUTPUT"
+          if [[ -n "$prev_tag" ]]; then
+            echo "Previous tag: $prev_tag"
+          else
+            echo "No previous v* tag found."
+          fi
+
+      - name: Generate release notes
+        id: changelog
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION="${{ steps.vars.outputs.version }}"
+          prev="${{ steps.prev.outputs.prev_tag }}"
+          file="RELEASE_NOTES.md"
+          : > "$file"
+
+          # Build git range
+          range=""
+          if [[ -n "$prev" ]]; then
+            range="${prev}..HEAD"
+            echo "_Compared with **$prev**_" >> "$file"
+            echo >> "$file"
+          fi
+
+          mapfile -t commits < <(git log --no-merges --pretty=format:%H ${range} || true)
+
+          # Group by Conventional Commit type
+          types=("feat" "fix" "perf" "refactor" "docs" "test" "build" "ci" "chore" "deps" "other")
+          declare -A groups
+          for t in "${types[@]}"; do groups["$t"]=""; done
+
+          for sha in "${commits[@]}"; do
+            subj="$(git show -s --format='%s' "$sha")"
+            short="$(git show -s --format='%h' "$sha")"
+            author="$(git show -s --format='%an' "$sha")"
+
+            type="other"
+            if echo "$subj" | grep -E -q "^[[:space:]]*(\[.*\][[:space:]]*)?(feat|fix|perf|refactor|docs|test|build|ci|chore|deps)(\([^)]*\))?[[:space:]]*:"; then
+              t=$(echo "$subj" | sed -E 's/^[[:space:]]*(\[.*\][[:space:]]*)?([a-zA-Z]+).*/\2/' | tr '[:upper:]' '[:lower:]')
+              case "$t" in
+                feat|fix|perf|refactor|docs|test|build|ci|chore|deps) type="$t" ;;
+                *) type="other" ;;
+              esac
+            else
+              echo "⚠️  Skip non-conventional commit: $subj"
+              continue
+            fi
+
+            # Extract PR number: " (#123)" or "PR #123"
+            pr=""
+            if [[ "$subj" =~ \(#([0-9]+)\) ]]; then pr="#${BASH_REMATCH[1]}"; fi
+            if [[ -z "$pr" && "$subj" =~ [Pp][Rr][[:space:]]*#([0-9]+) ]]; then pr="#${BASH_REMATCH[1]}"; fi
+
+            entry="- ${subj} (${short}) by @${author}"
+            [[ -n "$pr" ]] && entry="${entry} ${pr}"
+            groups["$type"]+="${entry}\n"
+          done
+
+          # Emit groups
+          for t in "${types[@]}"; do
+            content="${groups[$t]}"
+            if [[ -n "$content" ]]; then
+              case "$t" in
+                feat) h="✨ Features" ;;
+                fix) h="🐛 Fixes" ;;
+                perf) h="⚡️ Performance" ;;
+                refactor) h="🧹 Refactoring" ;;
+                docs) h="📝 Docs" ;;
+                test) h="✅ Tests" ;;
+                build) h="🏗️ Build" ;;
+                ci) h="🔁 CI" ;;
+                chore) h="🧺 Chore" ;;
+                deps) h="📦 Dependencies" ;;
+                other) h="🍊 Other" ;;
+              esac
+              echo "## ${h}" >> "$file"
+              printf "%b" "$content" >> "$file"
+              echo >> "$file"
+            fi
+          done
+
+          if ! grep -q "## " "$file"; then
+            echo "- No changes detected in the selected range." >> "$file"
+            echo >> "$file"
+          fi
+
+          echo "## 📦 How to install" >> "$file"
+          echo '```' >> "$file"
+          echo "go get github.com/lif0/pkg@${VERSION}" >> "$file"
+          echo '```' >> "$file"
+
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          echo "----- generated $file -----"
+          cat "$file"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.version }}
           name: ${{ steps.vars.outputs.version }}
           target_commitish: ${{ github.sha }}
-          generate_release_notes: true
+          body_path: ${{ steps.changelog.outputs.file }}
+          generate_release_notes: false
           make_latest: ${{ inputs.make_latest }}
           draft: false
           prerelease: ${{ steps.vars.outputs.prerelease }}
