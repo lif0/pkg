@@ -100,26 +100,20 @@ import (
 
 ## Purpose
 
-This repository provides a set of **low-level**, production-grade packages for Go — designed for **maximum performance**, **zero allocations where possible**, and **clean, idiomatic APIs**.
+These are small, low-level Go packages I kept rewriting from one project to the next, so I put them in one place. Most of them just fill gaps I run into in the standard library.
 
-The goal is to build a unified, reusable toolkit that can be safely used across personal and production systems — with strong guarantees on code quality, stability, and efficiency.
+What I try to hold to for each one:
 
-All packages are:
-
-- Fully tested (95-100% coverage)
-- Benchmarked
-- API-stable and versioned (semver)
-- Maintained and supported
-- Free of any non-standard dependencies
+- Decent test coverage (around 95%+) and benchmarks where speed matters
+- Few or no external dependencies
+- Small, predictable APIs
+- Semver tags, so you can pin a version
 
 ---
 
 ## Stability
 
-This repository follows [semantic versioning](https://semver.org/).  
-All exported APIs are stable, and breaking changes will be reflected in the major version.
-
-Releases are tagged and versioned. You can safely pin versions for use in production.
+The module follows [semver](https://semver.org/). Exported APIs are meant to stay stable, and anything breaking lands in a new major version, so it's safe to pin a version and not worry about it.
 
 ---
 
