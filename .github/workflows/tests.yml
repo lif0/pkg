@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false  # Allow all versions to run even if one fails
       matrix:
-        go-version: ['1.23', '1.24', 'stable']
+        go-version: ['1.23', 'stable']  # floor + latest stable
 
     steps:
       - name: Clone repo
@@ -27,6 +27,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
+          check-latest: true
           cache: true
 
       - name: Vet

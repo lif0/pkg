@@ -1,0 +1,18 @@
+# golangci-lint v2 configuration
+# https://golangci-lint.run/usage/configuration/
+version: "2"
+
+linters:
+  # standard set: errcheck, govet, ineffassign, staticcheck, unused
+  default: standard
+  exclusions:
+    rules:
+      # the recursive-mutex test intentionally locks/unlocks with an empty body
+      - path: syncx/reentrant_mutex_test\.go
+        linters:
+          - staticcheck
+        text: "SA2001"
+
+formatters:
+  enable:
+    - gofmt

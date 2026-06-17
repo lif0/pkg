@@ -1,9 +1,6 @@
 package async
 
-import (
-	"sync"
-	"sync/atomic"
-)
+import "sync/atomic"
 
 // PromiseError and FutureError are type aliases for Promise and Future specialized for error handling.
 // This allows for easy propagation of errors in asynchronous operations.
@@ -33,7 +30,6 @@ type (
 type Promise[T any] struct {
 	result   chan T
 	promised atomic.Bool
-	mu       sync.Mutex
 }
 
 // Future represents a read-only view of a promised value.

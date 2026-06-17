@@ -121,7 +121,7 @@ func Benchmark_OrderedMapIntInt(b *testing.B) {
 		var sink int
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
-				v, _ := m[keys[i]]
+				v := m[keys[i]]
 				sink ^= v
 			}
 		}
@@ -253,7 +253,7 @@ func Benchmark_OrderedMap_vs_Builtin_StringSlice(b *testing.B) {
 		var sink int
 		for n := 0; n < b.N; n++ {
 			for i := 0; i < N; i++ {
-				v, _ := m[keys[i]]
+				v := m[keys[i]]
 				if len(v) > 0 {
 					sink ^= len(v[0])
 				}

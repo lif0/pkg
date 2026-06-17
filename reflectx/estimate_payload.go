@@ -485,7 +485,7 @@ func EstimatePayloadOf(arg any) int {
 			return 0
 		}
 		// dereferenced pointers; for *[N]T{nil} return 0
-		for rv.Kind() == reflect.Ptr {
+		for rv.Kind() == reflect.Pointer {
 			if rv.IsNil() {
 				return 0
 			}
@@ -545,7 +545,7 @@ func payloadArray(rv reflect.Value) int {
 		}
 		return ErrFailEstimatePayload // unknown struct - return fail
 
-	case reflect.Ptr:
+	case reflect.Pointer:
 		el := et.Elem()
 		switch el.Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,

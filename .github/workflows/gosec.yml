@@ -1,0 +1,22 @@
+name: gosec
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gosec:
+    name: gosec
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run gosec
+        uses: securego/gosec@master
+        with:
+          args: ./...
