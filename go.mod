@@ -3,7 +3,7 @@ module github.com/lif0/pkg
 go 1.23
 
 require (
-	github.com/petermattis/goid v0.0.0-20250904145737-900bdf8bb490
+	github.com/petermattis/goid v0.0.0-20260617145643-92f3c7bf09b5
 	github.com/stretchr/testify v1.11.1
 )
 
