@@ -23,6 +23,22 @@
 <a href="https://github.com/lif0/pkg/releases">
 <img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=v*" />
 </a>
+<!-- Go Reference -->
+<a href="https://pkg.go.dev/github.com/lif0/pkg">
+<img src="https://pkg.go.dev/badge/github.com/lif0/pkg.svg" alt="Go Reference" />
+</a>
+<!-- Coverage -->
+<a href="https://coveralls.io/github/lif0/pkg?branch=main">
+<img src="https://coveralls.io/repos/github/lif0/pkg/badge.svg?branch=main" alt="Coverage Status" />
+</a>
+<!-- Go Report Card -->
+<a href="https://goreportcard.com/report/github.com/lif0/pkg">
+<img src="https://goreportcard.com/badge/github.com/lif0/pkg" />
+</a>
+<!-- Version -->
+<a href="https://github.com/lif0/pkg/releases">
+<img src="https://img.shields.io/github/v/tag/lif0/pkg?label=version&filter=v*" />
+</a>
 <!-- GitHub -->
 <a href="https://github.com/lif0/pkg">
 <img src="https://img.shields.io/github/last-commit/lif0/pkg.svg" />
