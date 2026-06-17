@@ -3,7 +3,7 @@ package internal_test
 import (
 	"testing"
 
-	"github.com/lif0/pkg/internal"
+	"github.com/lif0/pkg/structx/internal"
 	"github.com/stretchr/testify/assert"
 )
 

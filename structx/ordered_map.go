@@ -1,7 +1,7 @@
 package structx
 
 import (
-	"github.com/lif0/pkg/internal"
+	"github.com/lif0/pkg/structx/internal"
 )
 
 type kv[K any, V any] struct {

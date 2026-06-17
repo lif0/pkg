@@ -39,32 +39,32 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>async</code></td>
+            <td><a href="./async"><code>async</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/async">go.dev</a></td>
             <td>Futures, promises, and deferred actions</td>
         </tr>
         <tr>
-            <td><code>syncx</code></td>
+            <td><a href="./syncx"><code>syncx</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/syncx">go.dev</a></td>
             <td>Synchronization primitives: reentrant mutex, semaphore, sync value, <code>WithLock</code></td>
         </tr>
         <tr>
-            <td><code>chanx</code></td>
+            <td><a href="./chanx"><code>chanx</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/chanx">go.dev</a></td>
             <td>Channel helpers: fan-in, send/receive conversions</td>
         </tr>
         <tr>
-            <td><code>errx</code></td>
+            <td><a href="./errx"><code>errx</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/errx">go.dev</a></td>
             <td>Error utilities: <code>MultiError</code></td>
         </tr>
         <tr>
-            <td><code>structx</code></td>
+            <td><a href="./structx"><code>structx</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/structx">go.dev</a></td>
             <td>Data structures: <code>OrderedMap</code>, <code>ObjectPool</code></td>
         </tr>
         <tr>
-            <td><code>reflectx</code></td>
+            <td><a href="./reflectx"><code>reflectx</code></a></td>
             <td><a href="https://pkg.go.dev/github.com/lif0/pkg/reflectx">go.dev</a></td>
             <td>Reflection helpers: payload-size estimation</td>
         </tr>
