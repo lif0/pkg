@@ -4,9 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| pkg/sync@v1.x.x   | :white_check_mark: |
-| pkg/concurrency@v1.x.x   | :white_check_mark: |
-| pkg/utils@v1.x.x   | :white_check_mark: |
+| github.com/lif0/pkg@v1.x.x | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

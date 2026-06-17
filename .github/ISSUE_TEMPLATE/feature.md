@@ -19,4 +19,4 @@ Clarify how we can verify that the task is done.
 -->
 
 # Sub-Module Label (Required)
-Please select and apply the appropriate label for the affected sub-module (e.g., `pkg/sync`, `pkg/concurrency`, `pkg/utils`). This helps route the issue to the right team. If unsure, describe the sub-module in the additional context section.
+Please select and apply the appropriate label for the affected sub-module (e.g., `async`, `syncx`, `chanx`, `errx`, `structx`, `reflectx`). This helps route the issue to the right team. If unsure, describe the sub-module in the additional context section.

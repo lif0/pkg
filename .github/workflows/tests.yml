@@ -1,17 +1,9 @@
 name: Multi-version Tests
 
 on:
-  workflow_run:
-    workflows: ["build"]
-    types:
-      - completed
   push:
     branches:
       - main
-    paths:
-      - 'utils/**'
-      - 'concurrency/**'
-      - 'sync/**'
   pull_request:
     branches:
       - '**'
@@ -25,11 +17,7 @@ jobs:
     strategy:
       fail-fast: false  # Allow all versions to run even if one fails
       matrix:
-        module: [utils, concurrency, sync]
-        go-version: ['1.22', '1.23', '1.24']
-    defaults:
-      run:
-        working-directory: ${{ matrix.module }}
+        go-version: ['1.23', '1.24', 'stable']
 
     steps:
       - name: Clone repo
@@ -40,7 +28,6 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           cache: true
-          cache-dependency-path: ${{ matrix.module }}/go.sum
 
       - name: Vet
         run: go vet ./...

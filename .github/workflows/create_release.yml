@@ -1,26 +1,18 @@
-name: 🧰 Go Module Release UI
+name: 🧰 Release
 
 on:
   workflow_dispatch:
     inputs:
-      go_module:
-        description: "Choice submodule"
-        type: choice
-        options:
-          - concurrency
-          - utils
-          - sync
-        default: concurrency
       version:
         description: "Version (example: v1.0.1 or 1.0.1 — prefix `v` will be added)"
         required: true
       make_latest:
         description: "Mark as latest"
         type: choice
-        options: ["false", "true", "legacy"]
+        options: ["true", "false", "legacy"]
         default: "true"
       prerelease:
-        description: "Пререлиз? (оставьте пустым для автоопределения по суффиксу версии)"
+        description: "Prerelease? (leave empty to auto-detect by version suffix)"
         required: false
 
 permissions:
@@ -30,227 +22,41 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout selected branch
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
 
-      - name: Resolve module paths and compute tag/name
+      - name: Compute tag and prerelease flag
         id: vars
         shell: bash
         run: |
           set -euo pipefail
-          GO_MODULE="${{ inputs.go_module }}"
-          VERSION_IN="${{ inputs.version }}"
-          MAKE_LATEST="${{ inputs.make_latest }}"
-          INPUT_PRERELEASE="${{ inputs.prerelease || '' }}"
-          REPO="${GITHUB_REPOSITORY}" # owner/repo
-
-          GO_MOD="${GO_MODULE}/go.mod"
-          if [[ ! -f "$GO_MOD" ]]; then
-            echo "::error::Файл '$GO_MOD' не найден. Ожидаю структуру '<module>/go.mod'."
-            exit 1
-          fi
-
-          # module path from go.mod
-          MODULE_PATH="$(awk '/^module[[:space:]]+/ {print $2; exit}' "$GO_MOD")"
-          if [[ -z "$MODULE_PATH" ]]; then
-            echo "::error::Не удалось извлечь module path из '$GO_MOD'."
-            exit 1
-          fi
-
-          # derive module_dir for Go tag (github.com/<owner>/<repo>/<module_dir>)
-          MODULE_DIR="$GO_MODULE"
-          prefix="github.com/${REPO}/"
-          if [[ "$MODULE_PATH" == ${prefix}* ]]; then
-            MODULE_DIR="${MODULE_PATH#${prefix}}"
-          fi
-
-          MODULE_NAME="$(basename "$MODULE_PATH")"
-          DIR_REL="$GO_MODULE"
-
-          # normalize version: add leading 'v' if missing
-          VERSION="$VERSION_IN"
+          VERSION="${{ inputs.version }}"
           [[ "$VERSION" =~ ^v ]] || VERSION="v${VERSION}"
 
-          # prerelease auto-detect
           PRERELEASE="false"
-          if [[ -n "$INPUT_PRERELEASE" ]]; then
+          INPUT_PRE="${{ inputs.prerelease || '' }}"
+          if [[ -n "$INPUT_PRE" ]]; then
             shopt -s nocasematch
-            if [[ "$INPUT_PRERELEASE" =~ ^(1|true|yes|y)$ ]]; then PRERELEASE="true"; fi
-            if [[ "$INPUT_PRERELEASE" =~ ^(0|false|no|n)$ ]]; then PRERELEASE="false"; fi
+            [[ "$INPUT_PRE" =~ ^(1|true|yes|y)$ ]] && PRERELEASE="true"
             shopt -u nocasematch
-          else
-            if [[ "$VERSION" == *"-"* ]]; then PRERELEASE="true"; fi
+          elif [[ "$VERSION" == *"-"* ]]; then
+            PRERELEASE="true"
           fi
 
-          # compute tag as <module_dir>/<version>
-          TAG="${MODULE_DIR}/${VERSION}"
-          TAG="${TAG#/}" ; TAG="${TAG%/}"
-
-          NAME="${MODULE_NAME} ${VERSION}"
-
-          echo "module_path=$MODULE_PATH" >> "$GITHUB_OUTPUT"
-          echo "module_name=$MODULE_NAME" >> "$GITHUB_OUTPUT"
-          echo "dir_rel=$DIR_REL" >> "$GITHUB_OUTPUT"
-          echo "module_dir=$MODULE_DIR" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "name=$NAME" >> "$GITHUB_OUTPUT"
-          echo "make_latest=$MAKE_LATEST" >> "$GITHUB_OUTPUT"
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
-
-      - name: Get current HEAD SHA
-        id: head
-        shell: bash
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Find previous tag for this module
-        id: prev
-        shell: bash
-        run: |
-          set -euo pipefail
-          moduleDir="${{ steps.vars.outputs.module_dir }}"
-          pattern="${moduleDir}/v*"
-          prev_tag="$(git tag --list "$pattern" --sort=-v:refname | head -n1 || true)"
-          echo "prev_tag=$prev_tag" >> "$GITHUB_OUTPUT"
-          if [[ -n "$prev_tag" ]]; then
-            echo "Previous tag: $prev_tag"
-          else
-            echo "No previous tag found for pattern '$pattern'."
-          fi
-
-      - name: Generate module-specific CHANGELOG (scoped only)
-        id: changelog
-        shell: bash
-        run: |
-          #set -x  # Включить отладку
-          set -euo pipefail
-          
-          modulePath="${{ steps.vars.outputs.dir_rel }}"
-          moduleName="${{ steps.vars.outputs.module_name }}"
-          prev="${{ steps.prev.outputs.prev_tag }}"
-          file="CHANGELOG-${moduleName}.md"
-
-          # Build git range
-          range=""
-          if [[ -n "$prev" ]]; then
-            range="$prev..HEAD"
-            baseLabel="$prev"
-          else
-            baseLabel=""
-          fi
-
-          # Prepare lc variants once
-          module_name_lc="${moduleName,,}"
-          module_base_lc="$(basename -- "$modulePath")"
-          module_base_lc="${module_base_lc,,}"
-
-          # Include commits with Conventional Commit scope matching the module
-          mapfile -t all_in_range < <(git log --no-merges --pretty=format:%H ${range} || true)
-          commits=()
-          for sha in "${all_in_range[@]}"; do
-            subj="$(git show -s --format='%s' "$sha")"
-            # Обновляем регулярное выражение для обработки префиксов [PKG-0]
-            if [[ "$subj" =~ ^(\[[^]]+\][[:space:]]*)?[a-zA-Z]+\(([^\)]+)\) ]]; then
-              scope="${BASH_REMATCH[2]}"  # Теперь вторая группа захвата
-              IFS=',' read -ra scopes <<< "$scope"
-              for s in "${scopes[@]}"; do
-                s_trim="$(echo "$s" | xargs)"
-                s_trim_lc="${s_trim,,}"
-                if [[ "$s_trim_lc" == "$module_name_lc" || "$s_trim_lc" == "$module_base_lc" || "$s_trim_lc" == "$module_name_lc/"* ]]; then
-                  commits+=("$sha")
-                  break
-                fi
-              done
-            fi
-          done
-
-          echo >> "$file"
-          if [[ -n "$baseLabel" ]]; then
-            echo "_Сравнение с **$baseLabel**_" >> "$file"
-            echo >> "$file"
-          fi
-
-          # Group by Conventional Commit type
-          types=("feat" "fix" "perf" "refactor" "docs" "test" "build" "ci" "chore" "deps" "other")
-          declare -A groups
-          for t in "${types[@]}"; do groups["$t"]=""; done
-
-          for sha in "${commits[@]}"; do
-            subj="$(git show -s --format='%s' "$sha")"
-            short="$(git show -s --format='%h' "$sha")"
-            author="$(git show -s --format='%an' "$sha")"
-
-            type="other"
-            # Используем grep для определения типа
-            if echo "$subj" | grep -E -q "^[[:space:]]*(\[.*\][[:space:]]*)?(feat|fix|perf|refactor|test|build|ci|chore|deps)(\([^)]*\))?[[:space:]]*:"; then
-              t=$(echo "$subj" | sed -E 's/^[[:space:]]*(\[.*\][[:space:]]*)?([a-zA-Z]+).*/\2/' | tr '[:upper:]' '[:lower:]')
-              case "$t" in
-                feat|fix|perf|refactor|docs|test|build|ci|chore|deps) type="$t" ;;
-                *) type="other" ;;
-              esac
-            else
-              echo "⚠️  Skip non-conventional commit: $subj"
-              continue
-            fi
-
-            # Extract PR number pattern " (#123)" or "PR #123"
-            pr=""
-            if [[ "$subj" =~ \(#([0-9]+)\) ]]; then pr="#${BASH_REMATCH[1]}"; fi
-            if [[ -z "$pr" && "$subj" =~ [Pp][Rr][[:space:]]*#([0-9]+) ]]; then pr="#${BASH_REMATCH[1]}"; fi
-
-            entry="- ${subj} (${short}) by @${author}"
-            [[ -n "$pr" ]] && entry="${entry} ${pr}"
-            groups["$type"]+="${entry}\\n"
-          done
-
-          # Emit groups
-          for t in "${types[@]}"; do
-            content="${groups[$t]}"
-            if [[ -n "$content" ]]; then
-              case "$t" in
-                feat) h="✨ Features" ;;
-                fix) h="🐛 Fixes" ;;
-                perf) h="⚡️ Performance" ;;
-                refactor) h="🧹 Refactoring" ;;
-                docs) h="📝 Docs" ;;
-                #test) h="✅ Tests" ;;
-                #build) h="🏗️ Build" ;;
-                #ci) h="🔁 CI" ;;
-                chore) h="🧺 Chore" ;;
-                deps) h="📦 Dependencies" ;;
-                other) h="🍊 Other" ;;
-              esac
-              echo "## ${h}" >> "$file"
-              printf "%b" "$content" >> "$file"
-              echo >> "$file"
-            fi
-          done
-
-          if ! grep -q "## " "$file"; then
-            echo "- No changes detected for this module in the selected range." >> "$file"
-          fi
-
-          
-          echo "## 📦 How install" >> "$file"
-          echo '```' >> "$file"
-          echo "go get github.com/lif0/pkg/${moduleName}@${{ steps.vars.outputs.version }}" >> "$file"
-          echo '```' >> "$file"
-
-          echo "file=$file" >> "$GITHUB_OUTPUT"
-          echo "Generated $file"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.vars.outputs.tag }}
-          name: ${{ steps.vars.outputs.name }}
-          target_commitish: ${{ steps.head.outputs.sha }}
-          body_path: ${{ steps.changelog.outputs.file }}
-          generate_release_notes: false
-          make_latest: ${{ steps.vars.outputs.make_latest }}
+          tag_name: ${{ steps.vars.outputs.version }}
+          name: ${{ steps.vars.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          make_latest: ${{ inputs.make_latest }}
           draft: false
           prerelease: ${{ steps.vars.outputs.prerelease }}
         env:

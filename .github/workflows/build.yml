@@ -3,18 +3,10 @@ on:
   push:
   pull_request:
 
-env:
-  GO_VERSION: stable
-
 jobs:
-
   build:
     name: Build Project
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module: [utils, concurrency, sync]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,14 +14,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version-file: go.mod
           cache: true
-          cache-dependency-path: ${{ matrix.module }}/go.sum
           check-latest: false
 
       - name: go build
-        working-directory: ${{ matrix.module }}
-        run: |
-          go build ./...
-        env:
-          GOPATH: /home/runner/work/${{ github.event.repository.name }}/go
+        run: go build ./...
