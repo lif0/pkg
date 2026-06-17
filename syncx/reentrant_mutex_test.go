@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -48,7 +49,7 @@ func TestUnlockFromAnotherGoroutine(t *testing.T) {
 	go func() {
 		defer wg.Done()
 
-		require.PanicsWithError(t, ErrUnlockFromAnotherGoroutine.Error(), func() {
+		assert.PanicsWithError(t, ErrUnlockFromAnotherGoroutine.Error(), func() {
 			mx.Unlock()
 		})
 	}()

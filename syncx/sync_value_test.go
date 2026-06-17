@@ -166,7 +166,7 @@ func Test_IntValue(t *testing.T) {
 						})
 					}
 
-					assert.True(t, out > 0)
+					assert.Positive(t, out)
 				}()
 			}
 		}()
@@ -239,7 +239,7 @@ func Test_SliceValue(t *testing.T) {
 						})
 					}
 
-					assert.True(t, len_ > 1)
+					assert.Greater(t, len_, 1)
 				}()
 			}
 		}()
@@ -309,7 +309,7 @@ func Test_MapValue(t *testing.T) {
 						})
 					}
 
-					assert.True(t, x > 0)
+					assert.Positive(t, x)
 				}()
 			}
 		}()
@@ -396,7 +396,7 @@ func Test_StructValue(t *testing.T) {
 		// assert
 		sv.ReadValue(func(v *complexStruct) {
 			assert.True(t, v.Flag)
-			assert.Equal(t, writers*perWriter, len(v.Nums))
+			assert.Len(t, v.Nums, writers*perWriter)
 			assert.Equal(t, writers*perWriter, v.Index["cnt"])
 		})
 	})

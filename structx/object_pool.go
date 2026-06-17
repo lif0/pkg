@@ -1,20 +1,23 @@
+// Package structx provides ordered and pooled data structures.
 package structx
 
+// ObjectPool is a free-list pool that hands out reusable *T values.
 type ObjectPool[T any] struct {
 	s    uint32
 	obj  []*T
 	make func(uint32) []*T
 }
 
+// NewObjectPool returns an ObjectPool, optionally preallocated with size objects.
 func NewObjectPool[T any](size ...uint32) *ObjectPool[T] {
-	var cap uint32
+	var capacity uint32
 	if len(size) > 0 && size[0] > 0 {
-		cap = size[0]
+		capacity = size[0]
 	}
 
 	return &ObjectPool[T]{
-		s:    cap,
-		obj:  fmakeDefault[T](cap),
+		s:    capacity,
+		obj:  fmakeDefault[T](capacity),
 		make: fmakeDefault[T],
 	}
 }
@@ -29,6 +32,7 @@ func fmakeDefault[T any](n uint32) []*T {
 	return out
 }
 
+// Get returns an object from the pool, growing it if the pool is empty.
 func (p *ObjectPool[T]) Get() *T {
 	if len(p.obj) == 0 {
 		p.allocObjects()

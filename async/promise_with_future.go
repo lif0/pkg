@@ -2,17 +2,16 @@ package async
 
 import "sync/atomic"
 
-// PromiseError and FutureError are type aliases for Promise and Future specialized for error handling.
-// This allows for easy propagation of errors in asynchronous operations.
-type (
-	PromiseError = Promise[error]
-	FutureError  = Future[error]
-)
+// PromiseError is a Promise specialized for error propagation.
+type PromiseError = Promise[error]
+
+// FutureError is a Future specialized for error propagation.
+type FutureError = Future[error]
 
 // Promise represents a writable, single-assignment container for a future value.
 // It allows setting a value exactly once. Attempting to set the value more than once is ignored.
 // The internal channel is buffered to hold one value and is closed after setting.
-// Synchronization is handled via atomic operations and a mutex for thread safety.
+// Synchronization is handled via atomic operations for thread safety.
 //
 // Example usage:
 //

@@ -1,7 +1,7 @@
 package errx_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	"github.com/lif0/pkg/errx"
@@ -21,12 +21,12 @@ func TestMultiError_Error(t *testing.T) {
 		},
 		{
 			name: "single error",
-			errs: errx.MultiError{fmt.Errorf("error one")},
+			errs: errx.MultiError{errors.New("error one")},
 			want: "1 error(s) occurred:\n* error one",
 		},
 		{
 			name: "multiple errors",
-			errs: errx.MultiError{fmt.Errorf("error one"), fmt.Errorf("error two"), fmt.Errorf("error three")},
+			errs: errx.MultiError{errors.New("error one"), errors.New("error two"), errors.New("error three")},
 			want: "3 error(s) occurred:\n* error one\n* error two\n* error three",
 		},
 	}
@@ -50,7 +50,7 @@ func TestMultiError_Append(t *testing.T) {
 	}
 
 	// Append first error
-	err1 := fmt.Errorf("error one")
+	err1 := errors.New("error one")
 	me.Append(err1)
 	if len(me) != 1 {
 		t.Errorf("After appending first error, len(me) = %d, want 1", len(me))
@@ -66,7 +66,7 @@ func TestMultiError_Append(t *testing.T) {
 	}
 
 	// Append second error
-	err2 := fmt.Errorf("error two")
+	err2 := errors.New("error two")
 	me.Append(err2)
 	if len(me) != 2 {
 		t.Errorf("After appending second error, len(me) = %d, want 2", len(me))
@@ -89,13 +89,13 @@ func TestMultiError_MaybeUnwrap(t *testing.T) {
 		},
 		{
 			name: "single error",
-			errs: errx.MultiError{fmt.Errorf("error one")},
-			want: fmt.Errorf("error one"),
+			errs: errx.MultiError{errors.New("error one")},
+			want: errors.New("error one"),
 		},
 		{
 			name: "multiple errors",
-			errs: errx.MultiError{fmt.Errorf("error one"), fmt.Errorf("error two")},
-			want: errx.MultiError{fmt.Errorf("error one"), fmt.Errorf("error two")},
+			errs: errx.MultiError{errors.New("error one"), errors.New("error two")},
+			want: errx.MultiError{errors.New("error one"), errors.New("error two")},
 		},
 	}
 
@@ -119,7 +119,7 @@ func TestMultiError_MaybeUnwrap(t *testing.T) {
 var globalErr = errx.MultiError{}
 
 func TestMultiError_Other(t *testing.T) {
-	assert.Len(t, globalErr, 0)
+	assert.Empty(t, globalErr)
 	assert.True(t, globalErr.IsEmpty())
 	assert.NoError(t, globalErr.MaybeUnwrap())
 }

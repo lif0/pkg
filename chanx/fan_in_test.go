@@ -57,7 +57,7 @@ func TestFanInBasic(t *testing.T) {
 	}
 
 	Sort(actual) // because FaiIn not guaranteed order
-	assert.EqualValues(t, expected, actual)
+	assert.Equal(t, expected, actual)
 }
 
 // TestFanInEmpty verifies that FanIn with no channels returns a closed channel immediately.
@@ -268,6 +268,6 @@ func TestFanInConcurrent(t *testing.T) {
 	expectedIter := numChans * numValues
 	expectedSum := ((numValues * (numValues + 1)) / 2) * numChans
 
-	assert.Equal(t, resultIter, expectedIter, "Expected %d iteration count, got %d", resultIter, expectedIter)
-	assert.Equal(t, resultSum, expectedSum, "Expected %d sum values, got %d", resultIter, expectedSum)
+	assert.Equal(t, expectedIter, resultIter, "Expected %d iteration count, got %d", resultIter, expectedIter)
+	assert.Equal(t, expectedSum, resultSum, "Expected %d sum values, got %d", resultIter, expectedSum)
 }

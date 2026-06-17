@@ -5,6 +5,19 @@ version: "2"
 linters:
   # standard set: errcheck, govet, ineffassign, staticcheck, unused
   default: standard
+  enable:
+    # correctness / style
+    - revive       # golint successor: docs/naming/style
+    - errorlint    # correct error wrapping (%w, errors.Is/As)
+    - testifylint  # correct testify usage in tests
+    - misspell     # typos in comments/strings
+    - unconvert    # redundant type conversions
+    - predeclared  # shadowing of predeclared identifiers
+    - unparam      # unused function parameters
+    # performance
+    - gocritic     # broad diagnostics incl. perf (rangeValCopy, hugeParam, ...)
+    - prealloc     # suggest slice preallocation in loops
+    - perfsprint   # strconv over fmt for speed
   exclusions:
     rules:
       # the recursive-mutex test intentionally locks/unlocks with an empty body
@@ -12,6 +25,17 @@ linters:
         linters:
           - staticcheck
         text: "SA2001"
+      # MultiError stores errors directly (no wrapping) — direct comparison is intentional
+      - path: errx/multi_error_test\.go
+        linters:
+          - errorlint
+      # test code doesn't need the same naming/style rigor as the public API
+      - path: _test\.go
+        linters:
+          - revive
+          - predeclared
+          - gocritic
+          - unparam
 
 formatters:
   enable:

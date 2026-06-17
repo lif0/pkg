@@ -6,7 +6,8 @@ import (
 	"unsafe"
 )
 
-var ErrFailEstimatePayload int = -1
+// ErrFailEstimatePayload is returned by EstimatePayloadOf when the payload size cannot be determined.
+var ErrFailEstimatePayload = -1
 
 // EstimatePayloadOf returns an approximate payload size (in bytes) of the given value.
 //

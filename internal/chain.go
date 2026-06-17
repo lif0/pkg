@@ -1,11 +1,14 @@
+// Package internal holds shared helpers used across the pkg packages.
 package internal
 
+// Chain ...
 type Chain[T any] struct {
 	size int
 	head *ChainLink[T]
 	tail *ChainLink[T]
 }
 
+// ChainLink ...
 type ChainLink[T any] struct {
 	Val  T
 	Prev *ChainLink[T]
@@ -39,7 +42,7 @@ func (c *Chain[T]) Remove(node *ChainLink[T]) {
 		c.tail = c.tail.Prev
 	}
 
-	c.size -= 1
+	c.size--
 }
 
 // Append ...
@@ -54,7 +57,7 @@ func (c *Chain[T]) Append(node *ChainLink[T]) {
 		c.tail = node
 	}
 
-	c.size += 1
+	c.size++
 }
 
 // GetHead ...

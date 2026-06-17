@@ -23,15 +23,15 @@ type OrderedMap[K comparable, V any] struct {
 
 // NewOrderedMap returns a new empty OrderedMap.
 func NewOrderedMap[K comparable, V any](size ...uint32) *OrderedMap[K, V] {
-	var cap uint32 = 0
+	var capacity uint32
 	if len(size) > 0 && size[0] > 0 {
-		cap = size[0]
+		capacity = size[0]
 	}
 
 	return &OrderedMap[K, V]{
-		dict:    make(map[K]*internal.ChainLink[kv[K, V]], cap),
+		dict:    make(map[K]*internal.ChainLink[kv[K, V]], capacity),
 		list:    internal.Chain[kv[K, V]]{},
-		objPool: NewObjectPool[internal.ChainLink[kv[K, V]]](cap),
+		objPool: NewObjectPool[internal.ChainLink[kv[K, V]]](capacity),
 	}
 }
 
@@ -41,8 +41,8 @@ func NewOrderedMap[K comparable, V any](size ...uint32) *OrderedMap[K, V] {
 // Complexity:
 // - time: O(1)
 // - mem: O(1)
-func (this *OrderedMap[K, V]) Get(key K) (V, bool) {
-	if node, ok := this.dict[key]; ok {
+func (m *OrderedMap[K, V]) Get(key K) (V, bool) {
+	if node, ok := m.dict[key]; ok {
 		return node.Val.V, true
 	}
 
@@ -57,18 +57,18 @@ func (this *OrderedMap[K, V]) Get(key K) (V, bool) {
 // Complexity:
 // - time: O(1)
 // - mem: O(1)
-func (this *OrderedMap[K, V]) Put(key K, value V) {
-	if node, ok := this.dict[key]; ok {
+func (m *OrderedMap[K, V]) Put(key K, value V) {
+	if node, ok := m.dict[key]; ok {
 		node.Val.V = value
 	} else {
-		node = this.objPool.Get() //&internal.Node[kv[K,V]]{Val: value}
+		node = m.objPool.Get() // &internal.Node[kv[K,V]]{Val: value}
 		node.Val.K = key
 		node.Val.V = value
 		node.Prev = nil // overcautiousness
 		node.Next = nil // overcautiousness
 
-		this.list.Append(node)
-		this.dict[key] = node
+		m.list.Append(node)
+		m.dict[key] = node
 	}
 }
 
@@ -78,8 +78,8 @@ func (this *OrderedMap[K, V]) Put(key K, value V) {
 // Complexity:
 // - time: O(1)
 // - mem: O(1)
-func (this *OrderedMap[K, V]) Delete(key K) {
-	Delete(this, key)
+func (m *OrderedMap[K, V]) Delete(key K) {
+	Delete(m, key)
 }
 
 // GetValues returns all values in insertion order.
@@ -88,18 +88,18 @@ func (this *OrderedMap[K, V]) Delete(key K) {
 // Complexity:
 // - time: O(N)
 // - mem: O(N)
-func (this *OrderedMap[K, V]) GetValues() []V {
-	result := make([]V, this.list.Len())
+func (m *OrderedMap[K, V]) GetValues() []V {
+	result := make([]V, m.list.Len())
 
 	if cap(result) == 0 {
 		return result
 	}
 
 	if cap(result) == 1 {
-		result[0] = this.list.GetHead().Val.V
+		result[0] = m.list.GetHead().Val.V
 	}
 
-	for i, v := range this.list.Iter() {
+	for i, v := range m.list.Iter() {
 		result[i] = v.V
 	}
 
@@ -115,9 +115,9 @@ func (this *OrderedMap[K, V]) GetValues() []V {
 //	for k, v := range m.Iter() {
 //		fmt.Println(k,v)
 //	}
-func (this *OrderedMap[K, V]) Iter() func(func(K, V) bool) {
+func (m *OrderedMap[K, V]) Iter() func(func(K, V) bool) {
 	return func(yield func(K, V) bool) {
-		h := this.list.GetHead()
+		h := m.list.GetHead()
 		for n := h; n != nil; n = n.Next {
 			if !yield(n.Val.K, n.Val.V) {
 				return

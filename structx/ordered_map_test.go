@@ -195,7 +195,7 @@ func Test_OrderedMap_Delete(t *testing.T) {
 		m.Delete(1)
 
 		// assert: the struct still empty
-		assert.Equal(t, 0, len(m.GetValues()))
+		assert.Empty(t, m.GetValues())
 	})
 }
 
@@ -256,7 +256,7 @@ func Test_OrderedMap_BuiltInDelete(t *testing.T) {
 		structx.Delete(m, 1)
 
 		// assert: the struct still empty
-		assert.Equal(t, 0, len(m.GetValues()))
+		assert.Empty(t, m.GetValues())
 	})
 }
 
@@ -272,7 +272,7 @@ func Test_OrderedMap_GetValues(t *testing.T) {
 
 		// assert
 		assert.NotNil(t, vals)
-		assert.Equal(t, 0, len(vals))
+		assert.Empty(t, vals)
 	})
 
 	t.Run("ok/single", func(t *testing.T) {
@@ -284,7 +284,7 @@ func Test_OrderedMap_GetValues(t *testing.T) {
 		vals := m.GetValues()
 
 		// assert
-		assert.Equal(t, 1, len(vals))
+		assert.Len(t, vals, 1)
 		assert.Equal(t, []int{7}, vals)
 	})
 
@@ -318,6 +318,6 @@ func Test_NewOrderedMap(t *testing.T) {
 		assert.False(t, ok)
 		assert.Equal(t, 0, v)
 		assert.NotNil(t, values)
-		assert.Equal(t, 0, len(values))
+		assert.Empty(t, values)
 	})
 }

@@ -1,3 +1,4 @@
+// Package errx provides small error-handling helpers, such as MultiError.
 package errx
 
 import (
